@@ -1,0 +1,7 @@
+1.新建一个页面：coordinate.html
+    设置各项的坐标
+2.新建一个数据表：coordinate_tbl
+    存储各项坐标
+3.report.js获取各项坐标，并设置为 2mm 的字符串格式
+
+4.数据从上到下，从左到右，重复的全部用copy，把xxx2改掉

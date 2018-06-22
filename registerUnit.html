@@ -1,0 +1,118 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>注册使用单位</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <!--vue.js-->
+    <script src="/js/vue.min.js"></script>
+    <script src="/js/vue-resource.js"></script>
+    <!--layui-layer-->
+    <script src="/js/layer.js"></script>
+</head>
+
+<body>
+<div class="container-fluid">
+    <h2 class="form-signin-heading">请填写单位信息</h2>
+
+
+    <div id="app">
+        <div id="myForm" class="form-horizontal">
+            <table width="80%" border="0" align="center" cellpadding="0" cellspacing="0">
+                <tr height="60">
+                    <td width="25%"><font color="#FF0000">*</font> 单位名称</td>
+                    <td><input type="text" class="form-control" id="UnitName"/></td>
+                </tr>
+                <tr height="60">
+                    <td width="25%"><font color="#FF0000">*</font> 单位编码</td>
+                    <td><input type="text" class="form-control" id="UUID"/></td>
+                </tr>
+                <tr height="60">
+                    <td width="25%"><font color="#FF0000">*</font> 单位密码</td>
+                    <td><input type="password" class="form-control" id="Password" placeholder="用于单位登录查询"/></td>
+                </tr>
+                <tr height="60">
+                    <td width="25%"></td>
+                    <td id="register">
+                        <button class="btn btn-lg btn-primary btn-block" v-on:click="register()">注册</button>
+                    </td>
+                </tr>
+                <tr height="60">
+                    <td width="25%"></td>
+                    <td id="Notification">{{message}}</td>
+                </tr>
+                <tr height="60">
+                    <td width="25%"></td>
+                </tr>
+                <tr height="60">
+                    <td width="25%"></td>
+                    <td><a href="/registerPerson">--》个人信息注册</a></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+
+
+<script>
+    var data = {
+        url: "/api/unitInfo",
+        message: "单位编码自行编制，一般使用单位名称的字头缩写，请记住"
+    };
+
+    var Unit = {
+        UUID: "",
+        UnitName: "",
+        Password: "",
+        RegisterDate: ""
+    };
+
+    var app = new Vue({
+        el: "#app",
+        data: data,
+        created: function () {
+        },
+        methods: {
+            register: function () {
+                //对输入项进行校验
+                if ($('#UUID').val() == "") {
+                    layer.msg("请填写单位编码");
+                } else if ($('#UnitName').val() == "") {
+                    layer.msg("请填写单位名称");
+                } else if ($('#Password').val() == "") {
+                    layer.msg("请填写单位密码");
+                } else {
+                    Unit.UUID = $('#UUID').val();
+                    Unit.UnitName = $('#UnitName').val();
+                    Unit.Password = $('#Password').val();
+                    var date = new Date();
+                    Unit.RegisterDate = date;
+                    this.$http.post(this.url, Unit).then(function (response) {
+                        // success callback
+                        if (response.data == "FAIL") {
+                            this.message = "插入单位信息失败";
+                        } else if (response.data == "USED") {
+                            this.message = "已有此单位编码，请更换编码";
+                        } else {
+                            this.message = "插入单位信息成功。";
+                        }
+                    }, function (response) {
+                        // error callback
+                        this.message = "插入单位信息失败。";
+                    });
+                }//end of else
+            }
+        }//end of mothods
+    });//end of app
+
+
+</script>
+</html>
+

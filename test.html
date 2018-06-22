@@ -1,0 +1,158 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>身体成分测试</title>
+     <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <!--vue.js-->
+    <script src="/js/vue.min.js"></script>
+    <script src="/js/vue-resource.js"></script>
+  </head>
+
+<body>
+<div class="container-fluid">
+<h2 class="form-signin-heading">请填写测试者信息</h2>
+
+
+
+  <div>
+   <div id="app" class="form-horizontal">
+	 <table width="80%"  border="0" align="center" cellpadding="0" cellspacing="0">
+		 <tr height="60"><td width="25%">设备编号</td><td><input type="text" class="form-control"  v-model="deviceID"/></td></tr>
+		 <tr height="60"><td width="25%">设备IP</td><td><a :href="'http://'+localIp">{{localIp}}</a></td></tr>
+		 <tr height="60"><td width="25%"><font color="#FF0000">*</font> 编号</td><td><input type="text" class="form-control" id="UID"/></td></tr>
+          <tr height="60"><td width="25%"><font color="#FF0000">*</font>单位编号</td><td><input type="text" class="form-control" id="UUID"/></td></tr>
+       
+         <tr height="60"><td width="25%"></td><td><button class="btn btn-lg btn-primary btn-block" v-on:click="startTest">测试</button></td></tr>
+         <tr height="60"><td width="25%"></td><td><button class="btn btn-lg btn-danger btn-block" v-on:click="cancelTest">取消测试</button></td></tr>
+         <tr height="60"><td width="25%"></td><td><button class="btn btn-lg btn-warning btn-block" onclick=register()>人员注册</button></td></tr>
+         <tr height="60"><td width="25%"></td><td>{{message}}</td></tr>
+         
+    </table>
+   </div>
+  </div>
+   
+  <div>
+   <table width="80%"  border="0" align="center" cellpadding="0" cellspacing="0">
+	    <tr height="60"><td width="25%">&nbsp;&nbsp;&nbsp;&nbsp;</td><td><button class="btn btn-lg btn-success btn-block" onclick=getResult()>看结果</button></td></tr>
+   </table>
+  </div>
+   
+  </body>
+  
+  
+<script>
+   var personVerify="";    //个人查看结果的校验码 
+   var data = {
+			 url: "",
+			 urlIP:"",
+			 deviceID: "",
+			 localIp:"",
+             message: "确保您已经完成人员注册，设备编号会自动获取"
+   };
+   
+   var person = {
+	   uid: "",
+	   uuid: ""
+   }
+   
+	//采用location.href获取地址栏参数
+    var url=location.href; //取得整个地址栏
+    var urlList = url.split('/');
+    var deviceID = urlList[4];    //获取仪器编码
+    
+    var app = new Vue({
+         el: "#app",
+         data: data,    
+         created: function(){
+			 this.deviceID = urlList[4];    //获取仪器编码
+			 this.urlIP = "/api/ip/"+urlList[4];
+			 this.$http.get(this.urlIP).then(function(response){  //获取仪器IP
+                 // success callback
+                 this.localIp = response.body;
+             }, function(response){
+                 // error callback
+                 this.localIp = "未注册";
+             });
+		 },
+		 methods:{
+			 startTest:function(){
+				 if ($('#UID').val() == ""){
+		            alert("请填写编号");
+		         }else if ($('#UUID').val() == ""){
+		            alert("请填写单位编号");
+                 }else {
+		            this.url = "/api/test/"+urlList[4]; 
+                    person.uid = $('#UID').val();     //获取人员编号
+                    person.uuid = $('#UUID').val();   //获取单位编号
+                    
+                    this.$http.post(this.url, person).then(function(response){
+                        // success callback
+                        if (response.data == "FAIL"){
+							this.message = "没有此人，请先注册";
+					    }else {
+                            this.message = "*请赤脚站在仪器上，双手握住手柄进行测试。";
+                        }
+                    }, function(response){
+                        // error callback
+                        this.message = "获取数据失败！";
+                    })
+                 }
+		     },
+		     
+		     cancelTest:function(){
+				 this.url = "/api/cancelTest/"+urlList[4]; 
+				 this.$http.post(this.url).then(function(response){  //发送取消指令
+                        // success callback
+                        if (response.data == "Test Canceled"){
+							this.message = "测试已取消";
+					    }
+                 }, function(response){
+					  // error callback
+                        this.message = "取消失败！";
+                 })
+              }
+              
+              
+		  }//end of methods
+     })	//end of app vue
+         
+
+  
+  function getResult() {
+	  var uid = $('#UID').val();
+	  var uuid = $('#UUID').val();
+	  if ($('#UID').val() == ""){
+		            alert("请填写编号");
+      }else if ($('#UUID').val() == ""){
+		            alert("请填写单位编号");
+      }else {
+		  
+	    var deviceID = urlList[4]; 
+	    if (personVerify == "") {
+	       personVerify = uid+uuid;  //连缀成个人校验码
+	    }
+	    //alert("personVerify="+personVerify);
+	    if (personVerify == uid+uuid) {
+	       window.location.href="/result/"+uuid+"/"+uid+"/"+deviceID; 
+	    }else {
+		   alert("只能查看本人结果！");
+        }
+        
+        
+      }
+  }
+  function register() {
+	  window.location.href="/registerPerson/"+deviceID; 
+  }
+
+
+</script>
+</html>
+

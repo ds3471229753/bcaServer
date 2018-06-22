@@ -1,0 +1,196 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>测试记录</title>
+     <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <!--vue.js-->
+    <script src="/js/vue.min.js"></script>
+    <script src="/js/vue-resource.js"></script>
+    <!--echart.js-->
+    <script src="/js/echarts.min.js"></script>
+  </head>
+
+<div class="container-fluid">
+<h2 class="form-signin-heading">测试记录</h2>
+
+<body>
+
+    <table style="color:blue"><th> <td>编号:</td><td id="id"></td> <td>&nbsp&nbsp单位代码:</td><td id="uuid"></td></table>
+    <div class="btn-group">
+      <button id="dataBtn" class="btn btn-info btn-lg" type="button"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> 历史数据</button>
+      <button id="chartBtn" class="btn btn-success btn-lg" type="button"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span> 变化曲线</button>
+    </div>
+    
+<div id="dataSection" class="bs-example" data-example-id="simple-table">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>测量时间</th>
+          <th>体重</th>
+          <th>脂肪</th>
+          <th>脂肪%</th>
+          <th>水分</th>
+          <th>肌肉</th>
+        </tr>
+      </thead>
+      <tbody id="upload-data">
+		  <tr v-for="item in items"> 
+			  <td>{{ item.testdate }}</td>
+			  <td>{{ item.weight }} </td>
+			  <td>{{ item.fat }}</td>
+			  <td>{{ item.pbf }}</td>
+			  <td>{{ item.water }}</td>
+			  <td>{{ item.muscle }}</td>
+		  </tr>
+      </tbody>
+    </table>
+  </div>
+  
+    <!-- ECharts  -->
+    <div id="chartSection" align="center" style="margin:auto; width:90%; height:300px;"></div>
+    <br>
+</body>
+
+<script>
+   //采用location.href获取地址栏参数
+    var url=location.href; //取得整个地址栏
+    var urlList = url.split('/');
+    var apiurl = "/api/history/"+urlList[4]+"/"+urlList[5];	
+    
+    //画曲线用的全局变量
+    var tmpDate = "";
+	var dateList = [];
+	var weightList = [];
+	var fatList = [];
+	var muscleList = [];
+	
+   var records = new Vue({
+        el: '#upload-data',
+        data: {
+          items: []
+        },
+        created: function(){
+			 this.$http.get(apiurl).then(function(response){
+                 // success callback
+                 var dataObj = response.body;  
+                 //layer.msg(JSON.stringify(dataObj));
+                 if (dataObj == "FAIL"){
+					 layer.msg("没有这个人的数据");
+				 }else {
+                     var len = parseInt(dataObj.length);
+                     for (let i=0; i<len; i++){      
+						 this.items.push(dataObj[i]);
+						 //图表同一天的只收录第一条
+						 if (dataObj[i].testdate != tmpDate){
+	                       dateList.push(dataObj[i].testdate);
+	                       weightList.push(dataObj[i].weight);
+	                       fatList.push(dataObj[i].fat);
+	                       muscleList.push(dataObj[i].muscle);
+	                       tmpDate = dataObj[i].testdate;
+	                     }
+	                 }
+
+	                 //基本信息
+	                 document.getElementById('id').innerText = dataObj[0].uid;
+	                 //document.getElementById('name').innerText = dataObj[0].Name;
+	                 document.getElementById('uuid').innerText = dataObj[0].uuid;
+	                 
+	                 //chart
+                     makeChart();
+                 }
+             }, function(response){
+                 // error callback
+                 layer.msg("获取数据失败！");
+             });
+		 }
+      });
+       
+        
+  function makeChart(){
+     /***********************************图表区******************************************/
+        // 基于准备好的dom，初始化echarts实例
+        var Chart = echarts.init(document.getElementById('chartSection'));
+         //为保证曲线的时间顺序，倒序
+         weightList.reverse();
+         fatList.reverse();
+         muscleList.reverse();
+       
+        // 指定图表的配置项和数据
+option = {
+    title: {
+        text: '变化曲线'
+    },
+    tooltip: {
+        trigger: 'axis'
+    },
+    legend: {
+        data:['体重','脂肪','肌肉'],
+        right:20
+    },
+    grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+    },
+    toolbox: {
+        feature: {
+            saveAsImage: {}
+        }
+    },
+    xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: dateList.reverse()  //为保证曲线的时间顺序，倒序
+    },
+    yAxis: {
+        type: 'value',
+        name: '(kg)'
+    },
+    series: [
+        {
+            name:'体重',
+            type:'line',
+            data: weightList
+        },
+        {
+            name:'脂肪',
+            type:'line',
+            data: fatList
+        },
+        {
+            name:'肌肉',
+            type:'line',
+            data: muscleList
+        }
+    ]
+};
+
+        Chart.setOption(option);
+  }
+  
+  //隐藏数据或图表
+  $(document).ready(function(){
+	  //$("#chartSection").hide();如果先隐藏会加载不全
+	  $("#dataBtn").click(function(){
+		  //layer.msg("data");
+		  $("#chartSection").hide();
+		  $("#dataSection").show();
+	  });
+	  $("#chartBtn").click(function(){
+		  //layer.msg("chart");
+		  $("#dataSection").hide();
+		  $("#chartSection").show();
+	  });
+  });
+	  
+</script>
+</html>
+

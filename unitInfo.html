@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>人员列表</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <!--vue.js-->
+    <script src="/js/vue.min.js"></script>
+    <script src="/js/vue-resource.js"></script>
+    <!--axios.js-->
+    <script src="/js/axios.min.js"></script>
+    <!--layui-layer-->
+    <script src="/js/layer.js"></script>
+    <style>
+        .page-bar {
+            margin-top: 35px;
+            width: 360px;
+        }
+
+        .page-bar ul, li {
+            margin: 0;
+            padding: 0;
+        }
+
+        .page-bar li {
+            list-style: none
+        }
+
+        .page-bar li:first-child > a {
+            margin-left: 0;
+        }
+
+        .page-bar a {
+            border: 1px solid #ddd;
+            text-decoration: none;
+            position: relative;
+            float: left;
+            padding: 6px 12px;
+            margin-left: -1px;
+            line-height: 1.42857143;
+            color: #337ab7;
+            cursor: pointer
+        }
+
+        .page-bar a:hover {
+            background-color: #eee;
+        }
+
+        .page-bar a.banclick {
+            cursor: not-allowed;
+        }
+
+        .page-bar .active a {
+            color: #fff;
+            cursor: default;
+            background-color: #337ab7;
+            border-color: #337ab7;
+        }
+
+        .page-bar i {
+            font-style: normal;
+            color: #d44950;
+            margin: 0 4px;
+            font-size: 12px;
+        }
+
+        h2 {
+            margin-left: 20px;
+        }
+    </style>
+</head>
+<body>
+<div id="info-list" class="tab-content">
+    <!--标签分页-->
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a href="#personList" data-toggle="tab" @click="clearChecks">
+                <span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;人员列表</a>
+        </li>
+        <li>
+            <a href="#resultList" data-toggle="tab" @click.once="resultQuery">
+                <span class="glyphicon glyphicon-list-alt"></span>&nbsp;&nbsp;测试结果</a>
+        </li>
+        <li>
+            <a href="#monitorList" data-toggle="tab" @click.once="monitorQuery">
+                <span class="glyphicon glyphicon-wrench"></span>&nbsp;&nbsp;设备列表</a>
+        </li>
+        <li>
+            <a href="#monitorState" data-toggle="tab" @click.once="monitorQuery">
+                <span class="glyphicon glyphicon-tasks"></span>&nbsp;&nbsp;设备状态</a>
+        </li>
+    </ul>
+
+    <!--人员列表-->
+    <div id="personList" class="tab-pane fade in active  table-responsive">
+        <h2 class="pull-left">本单位已注册人员</h2>
+        <h4 class="pull-left" style="margin-left: 10px;margin-top: 34px">共<i style="color: red">{{count}}</i>人</h4>
+        <div class="pull-right" style="margin: 20px 10px 20px">
+            <div class="pull-left input-group">
+                <div class="input-group row">
+                    <input type="text" class="form-control" placeholder="请输入用户编号" v-model="person_uid" style="width: 45%">
+                    <input type="text" class="form-control" placeholder="请输入用户姓名" v-model="person_name" style="width: 45%;margin-left: 15px">
+                </div>
+            </div>
+            <button type="button" class="btn btn-primary" @click="addData">
+                <span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;新增
+            </button>
+            <button type="button" class="btn btn-warning" @click="exitData">
+                <span class="glyphicon glyphicon-edit"></span>&nbsp;&nbsp;修改
+            </button>
+            <button type="button" class="btn btn-danger" @click="delData">
+                <span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;删除
+            </button>
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                    其他功能&nbsp;&nbsp;
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu pull-right">
+                    <li><a href="/registerUnit" class="bg-primary" @click="updateUnit">完善单位信息</a></li>
+                    <li><a href="/advice" class="bg-primary">给会员提建议</a></li>
+                    <li><a href="/countAnalysis" class="bg-primary">公司数据统计</a></li>
+                    <li><a href="javascript:;" class="bg-primary" @click="logout">退出登录</a></li>
+                </ul>
+            </div>
+        </div>
+        <table class="table table-striped table-bordered">
+            <tr>
+                <th>
+                    <!--选择框-->
+                </th>
+                <th>单位编号</th>
+                <th>用户编号</th>
+                <th>姓名</th>
+                <th>性别</th>
+                <th>出生年份</th>
+                <th>身高</th>
+                <th>手机号码</th>
+                <th>备注</th>
+            </tr>
+            <tr v-for="(content,index) in contents" :key="index">
+                <td style="text-align: center">
+                    <input type="checkbox" name="checkbox" v-model="checks" :value="content">
+                </td>
+                <td>{{content.uuid}}</td>
+                <td>{{content.uid}}</td>
+                <td><a :href="'/result/'+content.uuid+'/'+content.uid+'/'" title="查看测试报告">{{content.name}}</a></td>
+                <td>{{content.sex=== '1' ? '男':'女'}}</td>
+                <td>{{content.birthyear}}</td>
+                <td>{{content.height}}</td>
+                <td>{{content.phone}}</td>
+                <td>{{content.note }}</td>
+            </tr>
+        </table>
+
+        <!--分页-->
+        <div class="page-bar center-block">
+            <ul>
+                <li v-if="cur>1"><a @click="cur--,pageClick()"> < </a></li>
+                <li v-if="cur==1"><a class="banclick"> < </a></li>
+                <li v-for="index in indexs" :class="{ 'active': cur == index}">
+                    <a @click="btnClick(index)">{{ index }}</a>
+                </li>
+                <li v-if="cur!=all"><a @click="cur++"> > </a></li>
+                <li v-if="cur == all"><a class="banclick"> > </a></li>
+                <li><a>共<i>{{all}}</i>页</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!--测试结果-->
+    <div id="resultList" class="tab-pane fade table-responsive ">
+        <div class="pull-left input-group" style="margin: 20px 30px">
+            <div class="input-group row">
+                <input type="text" class="form-control" placeholder="请输入用户编号" v-model="search_uid" style="width: 45%">
+                <input type="text" class="form-control" placeholder="请输入用户姓名" v-model="search_name"
+                       style="width: 45%;margin-left: 15px">
+                <span class="input-group-btn">
+                        <button class="btn btn-default" @click="searchResult">搜索</button>
+                </span>
+            </div>
+        </div>
+        <div class="pull-right" style="margin: 20px 10px 20px">
+            <!--应该写成一个组件-->
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                    其他功能&nbsp;&nbsp;
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu pull-right">
+                    <li><a href="/registerUnit" class="bg-primary" @click="updateUnit">完善单位信息</a></li>
+                    <li><a href="/advice" class="bg-primary">给会员提建议</a></li>
+                    <li><a href="/countAnalysis" class="bg-primary">公司数据统计</a></li>
+                    <li><a href="javascript:;" class="bg-primary" @click="logout">退出登录</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <table class="table table-striped table-bordered">
+            <tr>
+                <th>单位编号</th>
+                <th>测试编号</th>
+                <th>用户编号</th>
+                <th>姓名</th>
+                <th>测试日期</th>
+            </tr>
+            <tr v-for="(result,index) in results"
+                :key="index">
+                <td>{{result.uuid}}</td>
+                <td>
+                    <a :href="'/testResult/'+result.uuid+'/'+result.testid+'/'" title="查看测试报告">{{result.testid}}</a>
+                </td>
+                <td>{{result.uid}}</td>
+                <td>{{result.name}}</td>
+                <td>{{result.testdate}}</td>
+            </tr>
+        </table>
+
+        <!--分页-->
+        <div class="page-bar center-block">
+            <ul>
+                <li v-if="rcur>1"><a @click="rcur--,pageClick()"> < </a></li>
+                <li v-if="rcur==1"><a class="banclick"> < </a></li>
+                <li v-for="rindex in rindexs" :class="{ 'active': rcur == rindex}">
+                    <a @click="rbtnClick(rindex)">{{ rindex }}</a>
+                </li>
+                <li v-if="rcur!=rall"><a @click="rcur++"> > </a></li>
+                <li v-if="rcur == rall"><a class="banclick"> > </a></li>
+                <li><a>共<i>{{rall}}</i>页</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!--设备列表-->
+    <div id="monitorList" class="tab-pane fade table-responsive">
+        <h2>本单位现有设备</h2>
+        <div class="pull-left input-group" style="margin: 20px 30px">
+            <div class="input-group row">
+                <input type="text" class="form-control" placeholder="请输入设备编号" v-model="device_id">
+                <span class="input-group-btn">
+                        <button class="btn btn-default" @click="registerDevice">添加</button>
+                </span>
+            </div>
+        </div>
+        <div class="pull-right" style="margin: 20px 10px 20px">
+            <button type="button" class="btn btn-danger" @click="delData">
+                <span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;删除
+            </button>
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                    其他功能&nbsp;&nbsp;
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu pull-right">
+                    <li><a href="/registerUnit" class="bg-primary" @click="updateUnit">完善单位信息</a></li>
+                    <li><a href="/advice" class="bg-primary">给会员提建议</a></li>
+                    <li><a href="/countAnalysis" class="bg-primary">公司数据统计</a></li>
+                    <li><a href="javascript:;" class="bg-primary" @click="logout">退出登录</a></li>
+                </ul>
+            </div>
+        </div>
+        <table class="table table-bordered">
+            <tr>
+                <th></th>
+                <th>设备编号</th>
+                <th>设备添加时间</th>
+            </tr>
+            <tr v-for="(monitor,index) in monitors"
+                :key="index">
+                <td style="text-align: center">
+                    <input type="checkbox" name="checkbox" v-model="checks" :value="monitor">
+                </td>
+                <td>{{monitor.deviceid}}</a></td>
+                <td>{{monitor.addtime}}</td>
+            </tr>
+        </table>
+    </div>
+
+    <!--设备状态-->
+    <div id="monitorState" class="tab-pane fade table-responsive">
+        <h2 style="margin-bottom: 30px">本单位设备状态预览</h2>
+        <table class="table table-bordered">
+            <tr>
+                <th>设备编号</th>
+                <th>本地IP</th>
+                <th>使用单位</th>
+                <th>登录时间</th>
+                <th>状态</th>
+            </tr>
+            <tr v-for="(monitor,index) in monitors"
+                :key="index">
+                <td><a :href="'/monitor/'+ monitor.deviceid ">{{monitor.deviceid}}</a></td>
+                <td>{{monitor.localip}}</td>
+                <td>{{monitor.holder}}</td>
+                <td>{{monitor.regtime}}</td>
+                <td>{{monitor.device_state}}</td>
+            </tr>
+        </table>
+    </div>
+
+</div>
+<script>
+    let infoList = new Vue({
+        el: '#info-list',
+        data: {
+            //人员列表信息
+            contents: [],//存储每页数据
+            contentsAll: [],//存储总数据
+            checks: [],
+            count: 0,//人员总数
+            person_uid: '',
+            person_name: '',
+
+            //设备列表信息
+            monitors: [],
+            device_id: '',
+            /*
+            * 分页
+            * @params
+            * all -> 总页数
+            * num ->  每页数据
+            * cur -> 当前页面
+            */
+            all: 0,
+            num: 10,
+            cur: 1,
+
+            rall: 0,
+            rcur: 1,
+
+            //测试结果信息
+            results: [],//每页结果
+            resultsAll: [],//总共结果
+            search_uid: '',
+            search_name: '',
+        },
+        watch: {
+            cur: function (oldValue, newValue) {
+                this.contents = [];
+                //当最后一夜数据条数少于每页个数时，会报错
+                for (let i = this.num * (this.cur - 1); i <= this.cur * this.num - 1; i++) {
+                    if (this.contentsAll[i] == undefined) {
+                        break;
+                    }
+                    this.contents.push(this.contentsAll[i]);
+                }
+            },
+            rcur: function (oldValue, newValue) {
+                this.results = [];
+                //当最后一夜数据条数少于每页个数时，会报错
+                for (let i = this.num * (this.rcur - 1); i <= this.rcur * this.num - 1; i++) {
+                    if (this.resultsAll[i] == undefined) {
+                        break;
+                    }
+                    this.results.push(this.resultsAll[i]);
+                }
+            },
+            search_uid: function () {
+                this.$options.methods.searchResult();
+            },
+            search_name: function () {
+                this.$options.methods.searchResult();
+            },
+            person_uid: function () {
+                this.$options.methods.searchPerson();
+            },
+            person_name: function () {
+                this.$options.methods.searchPerson();
+            },
+        },
+        mounted: function a() {
+            /*axios.get('/api/personQuery').then(function (res) {
+                for (let i = 0; i < infoList.num; i++) {
+                    infoList.contents.push(res.data[i]);
+                }
+                infoList.count = res.data.length;
+                infoList.contentsAll = res.data;
+                infoList.all = Math.ceil(res.data.length / infoList.num);
+                // infoList.contents = res.data;
+            }).catch(err => console.error(err));*/
+            this.$options.methods.personQuery();
+        },
+        methods: {
+            //清空选中框
+            clearChecks() {
+                this.checks = [];
+            },
+            //人员初始化
+            personQuery() {
+                axios.get('/api/personQuery').then(function (res) {
+                    for (let i = 0; i < infoList.num; i++) {
+                        infoList.contents.push(res.data[i]);
+                    }
+                    infoList.count = res.data.length;
+                    infoList.contentsAll = res.data;
+                    infoList.all = Math.ceil(res.data.length / infoList.num);
+                }).catch(err => console.error(err));
+            },
+            searchPerson(){
+                let _this = infoList;
+                axios.get('/api/personSearch/', {
+                    params: {
+                        'person_uid': _this.person_uid,
+                        'person_name': _this.person_name,
+                    }
+                })
+                    .then(res => {
+                        console.log(res.data);
+                        _this.contents = [];
+                        for (let i = 0; i < _this.num; i++) {
+                            //当搜出的数据不足一页时，后续的内容为res.data[i] = undefined,会报错
+                            if(res.data[i] === undefined){
+                                break;
+                            }
+                            _this.contents.push(res.data[i]);
+                        }
+                        _this.contentsAll = res.data;
+                        _this.all = Math.ceil(res.data.length / _this.num);
+                    })
+                    .catch(err => console.error(err));
+            },
+            //测试结果初始化
+            resultQuery() {
+                this.checks = [];
+                axios.get('/api/resultQuery').then(function (res) {
+                    console.log(res);
+                    for (let i = 0; i < infoList.num; i++) {
+                        infoList.results.push(res.data[i]);
+                    }
+                    infoList.rall = Math.ceil(res.data.length / infoList.num);
+                    infoList.resultsAll = res.data;
+                }).catch(err => console.error(err));
+            },
+            //测试结果搜索
+            searchResult() {
+                let _this = infoList;
+                console.log('hlloe');
+                axios.get('/api/resultSearch/', {
+                    params: {
+                        'search_uid': _this.search_uid,
+                        'search_name': _this.search_name,
+                    }
+                })
+                    .then(res => {
+                        console.log(res.data);
+                        _this.results = [];
+                        for (let i = 0; i < _this.num; i++) {
+                            //当搜出的数据不足一页时，后续的内容为res.data[i] = undefined,会报错
+                            if(res.data[i] === undefined){
+                                break;
+                            }
+                            _this.results.push(res.data[i]);
+                        }
+                        _this.resultsAll = res.data;
+                        _this.rall = Math.ceil(res.data.length / _this.num);
+                    })
+                    .catch(err => console.error(err));
+            },
+            //设备查询
+            monitorQuery() {
+                this.checks = [];
+                axios.get('/api/deviceState').then(function (res) {
+                    console.log(res);
+                    if (res.data !== 'FAIL') {
+                        infoList.monitors = res.data;
+                    } else {
+                        infoList.monitors = [];
+                    }
+                }).catch(err => console.error(err));
+            },
+            //页码点击事件
+            btnClick(data) {
+                if (data != this.cur) {
+                    this.cur = data
+                }
+            },
+            rbtnClick(data) {
+                if (data != this.rcur) {
+                    this.rcur = data
+                }
+            },
+            //删除
+            delData() {
+                if (this.checks.length === 0) {
+                    //提示层
+                    layer.msg('请选择要删除的数据！');
+                } else {
+                    //询问层
+                    layer.confirm('您确定要删除吗？', {
+                        icon: 5,
+                        btn: ['确定', '取消'] //按钮
+                    }, function () {
+                        //删除多条数据
+                        let url = $('#personList').attr('class').indexOf('active') > -1 ? '/api/deletePerson/' : '/api/deleteDevice/';
+                        let params = {};
+                        for (let i = 0; i < infoList.checks.length; i++) {
+                            params[infoList.checks[i].id] = infoList.checks[i].id;
+                        }
+                        console.log(params);
+                        axios.get(url, {params: params})
+                            .then(res => {
+                                console.log(res.data);
+                                if (res.data === 'OK') {
+                                    layer.alert('删除成功', {icon: 1}, function (index) {
+                                        layer.close(index);
+                                        url === '/api/deletePerson/' ? location.reload() : infoList.$options.methods.monitorQuery();
+                                    })
+                                }
+                            }).catch(err => console.error(err));
+                    }, function () {
+                        layer.msg('那您再考虑下吧');
+                    });
+                }
+            },
+            //修改
+            exitData() {
+                if (this.checks.length === 0) {
+                    //提示层
+                    layer.msg('请选择要修改的数据!');
+                } else if (this.checks.length > 1) {
+                    layer.msg('请选择一条数据进行修改!');
+                } else {
+                    let _this = this.checks[0];
+                    window.location.href = `/registerPerson?id=${_this.id}&uuid=${_this.uuid}&uid=${_this.uid}&name=${_this.name}&sex=${_this.sex}&birthyear=${_this.birthyear}&height=${_this.height}&phone=${_this.phone}&note=${_this.note}`;
+                }
+            },
+            //增加
+            addData() {
+                window.location.href = '/registerPerson';
+            },
+            //设备添加
+            registerDevice() {
+                if (this.device_id === '') {
+                    layer.msg('请输入设备编号');
+                } else {
+                    axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+                    Vue.prototype.$axios = axios;
+                    var params = new URLSearchParams();
+                    params.append('device_id', infoList.device_id);
+                    this.$axios({
+                        method: 'post',
+                        url: '/api/registerDevice',
+                        data: params
+                    }).then(function (res) {
+                        console.log(res);
+                        /*
+                        * 返回状态码：'1': 设备已存在，'2': 设备编码有误， '3': 设备添加成功， '4': 插入数据库失败
+                        * */
+                        switch (res.data) {
+                            case 1:
+                                layer.alert('设备已存在', {icon: 2});
+                                break;
+                            case 2:
+                                layer.alert('设备编码有误', {icon: 2});
+                                break;
+                            case 3:
+                                infoList.device_id = '';
+                                //location.reload();
+                                layer.alert('设备添加成功', {icon: 1}, function (index) {
+                                    layer.close(index);
+                                    infoList.$options.methods.monitorQuery();
+                                });
+                                break;
+                            case 4:
+                                layer.alert('设备添加失败，请重试', {icon: 2});
+                                break;
+                        }
+                    }).catch(err => console.error(err));
+                }
+            },
+            //修改单位信息
+            updateUnit(e) {
+                //prompt层
+                e.preventDefault();
+                layer.prompt({title: '请输入单位密码', formType: 1}, function (pass, index) {
+                    layer.close(index);
+                    axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+                    Vue.prototype.$axios = axios;
+                    var params = new URLSearchParams();
+                    params.append('password', pass);
+                    console.log(this);
+                    Vue.prototype.$axios({
+                        method: 'post',
+                        url: '/api/passQuery/',
+                        data: params
+                    }).then(res => {
+                        console.log(res.data);
+                        if (res.data === 'OK') {
+                            window.location.href = '/updateUnit/';
+                        } else if (res.data === 'FAIL') {
+                            //layer.msg('密码错误');
+                            infoList.updateUnit(e);
+                            layer.title('密码错误，请重新输入');
+                        }
+
+                    }).catch(err => console.error(err));
+                    /*layer.prompt({title: '随便写点啥，并确认', formType: 2}, function(text, index){
+                        layer.close(index);
+                        layer.msg('演示完毕！您的口令：'+ pass +'<br>您最后写下了：'+text);
+                    });*/
+                });
+            },
+            //退出登录
+            logout() {
+                axios.get('/api/logout').then(res => {
+                    if (res.data === 'OK') {
+                        layer.alert('退出登录成功', {icon: 1}, function (index) {
+                            layer.close(index);
+                            window.location.href = '/';
+                        });
+                    } else {
+                        layer.alert('退出登录失败', {icon: 2});
+                    }
+                })
+            }
+        },
+        computed: {
+            indexs: function () {
+                let left = 1;
+                let right = this.all;
+                let ar = [];
+                if (this.all >= 5) {
+                    if (this.cur > 3 && this.cur < this.all - 2) {
+                        left = this.cur - 2;
+                        right = this.cur + 2;
+                    } else {
+                        if (this.cur <= 3) {
+                            left = 1;
+                            right = 5;
+                        } else {
+                            right = this.all;
+                            left = this.all - 4;
+                        }
+                    }
+                }
+                while (left <= right) {
+                    ar.push(left);
+                    left++;
+                }
+                return ar
+            },
+            rindexs: function () {
+                let left = 1;
+                let right = this.rall;
+                let ar = [];
+                if (this.rall >= 5) {
+                    if (this.rcur > 3 && this.rcur < this.rall - 2) {
+                        left = this.rcur - 2;
+                        right = this.rcur + 2;
+                    } else {
+                        if (this.rcur <= 3) {
+                            left = 1;
+                            right = 5;
+                        } else {
+                            right = this.rall;
+                            left = this.rall - 4;
+                        }
+                    }
+                }
+                while (left <= right) {
+                    ar.push(left);
+                    left++;
+                }
+                return ar
+            }
+
+        },
+    });
+</script>
+</body>
+</html>

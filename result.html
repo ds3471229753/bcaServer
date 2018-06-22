@@ -1,0 +1,812 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>查看身体成分测试结果</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <!--vue.js-->
+    <script src="/js/vue.min.js"></script>
+    <script src="/js/vue-resource.js"></script>
+    <!--echart.js-->
+    <script src="/js/echarts.min.js"></script>
+    <!--layer.js-->
+    <script src="/js/layer.js"></script>
+</head>
+
+
+<div class="container-fluid">
+    <h2 class="form-signin-heading">当前测试结果</h2>
+
+
+    <body>
+    <!--这是我们的View,必须放在脚本前面,置于统一的div中-->
+    <div id="app">
+
+        <table>
+            <tr>
+                <td>编号:</td>
+                <td id="id">{{message.uid}}</td>
+            </tr>
+            <tr>
+                <td>单位代码:</td>
+                <td id="uuid">{{message.uuid}}</td>
+                <td>&nbsp&nbsp测试时间:</td>
+                <td id="testDate">{{message.testdate}}</td>
+            </tr>
+        </table>
+
+        <br>
+        <!--数据-->
+
+        <table width="90%" border="0" align="center" cellpadding="0" cellspacing="0">
+            <tr style="font-size:16px; text-align:center;">
+                <td style="width:auto; height:60px; background:#ccffcc; border-radius:5px; font-size:18px;"><p
+                        style="font-size:22px;">{{message.score}}</p>
+                    <p style="font-size:14px;" onClick="showScore()"><span class="glyphicon glyphicon-user"></span>健康评分
+                    </p></td>
+                <td>&nbsp;</td>
+                <td style="width:auto; height:60px; background:#cccc33; border-radius:5px; font-size:18px;"><p
+                        style="font-size:22px;">{{message.body_age}}</p>
+                    <p style="font-size:14px;" onClick="showBodyAge()"><span class="glyphicon glyphicon-search"></span>身体年龄
+                    </p></td>
+                <td>&nbsp;</td>
+                <td style="width:auto; height:60px; background:#ffcc66; border-radius:5px; font-size:18px;"><p
+                        style="font-size:22px;">{{message.bmr}}</p>
+                    <p style="font-size:14px;" onClick="showBMR()"><span class="glyphicon glyphicon-apple"></span>基础代谢
+                    </p></td>
+            </tr>
+        </table>
+        <br>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th></th>
+                <th>项目</th>
+                <th>测量结果</th>
+                <th>正常范围</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <th scope="row" style="color:red" id="weightFlag"></th>
+                <td>体重(kg)</td>
+                <td><label id="weight">{{message.weight}}</label></td>
+                <td><label id="weight_min"></label>-<label id="weight_max"></label></td>
+            </tr>
+            <tr>
+                <th scope="row" style="color:red" id="fatFlag"></th>
+                <td>脂肪(kg)</td>
+                <td><label id="fat">{{message.fat}}</label></td>
+                <td><label id="fat_min"></label>-<label id="fat_max"></label></td>
+            </tr>
+            <tr>
+                <th scope="row" style="color:red" id="pbfFlag"></th>
+                <td onclick="showPBF()">体脂率(%) <span class="glyphicon glyphicon-info-sign"></span></td>
+                <td><label id="pbf">{{message.pbf}}</label></td>
+                <td><label id="pbf_min"></label>-<label id="pbf_max"></label></td>
+            </tr>
+            <tr>
+                <th scope="row" style="color:red" id="waterFlag"></th>
+                <td>水分(kg)</td>
+                <td><label id="water">{{message.water}}</label></td>
+                <td><label id="water_min"></label>-<label id="water_max"></label></td>
+            </tr>
+            <tr>
+                <th scope="row" style="color:red" id="muscleFlag"></th>
+                <td>肌肉(kg)</td>
+                <td><label id="muscle">{{message.muscle}}</label></td>
+                <td><label id="muscle_min"></label>-<label id="muscle_max"></label></td>
+            </tr>
+            <tr>
+                <th scope="row" style="color:red" id="proteinFlag"></th>
+                <td>蛋白质(kg)</td>
+                <td><label id="protein">{{message.protein}}</label></td>
+                <td><label id="protein_min"></label>-<label id="protein_max"></label></td>
+            </tr>
+            <tr>
+                <th scope="row" style="color:red" id="boneFlag"></th>
+                <td>骨质(kg)</td>
+                <td><label id="bone">{{message.bone}}</label></td>
+                <td><label id="bone_min"></label>-<label id="bone_max"></label></td>
+            </tr>
+            <tr>
+                <th scope="row" style="color:red" id="bmiFlag"></th>
+                <td onclick="showBMI()">体质指数 <span class="glyphicon glyphicon-info-sign"></span></td>
+                <td><label id="bmi">{{message.bmi}}</label></td>
+                <td><label id="bmi_min"></label>-<label id="bmi_max"></label></td>
+            </tr>
+            <tr>
+                <th scope="row" style="color:red" id="pbfFlag"></th>
+                <td onclick="showVFI()">内脏脂肪指数 <span class="glyphicon glyphicon-info-sign"></span></td>
+                <td><label id="vfi">{{message.vfi}}</label></td>
+                <td><label>4-10</label></td>
+            </tr>
+            <tr>
+                <th scope="row" style="color:red" id="pbfFlag"></th>
+                <td onclick="showLiverRisk()">脂肪肝风险度(%) <span class="glyphicon glyphicon-info-sign"></span></td>
+                <td><label id="LiverRisk">{{message.liver_risk }}</label></td>
+                <td><label>小于50</label></td>
+            </tr>
+            <tr>
+                <th scope="row"></th>
+                <td>体型判定</td>
+                <td><label id="bodyType">{{bodyType}}</label></td>
+                <td></td>
+            </tr>
+            <tr>
+                <th scope="row"></th>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+
+            </tbody>
+        </table>
+
+        <!-- ECharts 四大基本成分 -->
+        <div align="center" id="basic" style="margin:auto; width:90%; height:300px;"></div>
+        <br>
+        <!-- ECharts 肥胖评估 -->
+        <div align="center" id="fatDegree" style="margin:auto; width:90%; height:280px;"></div>
+        <!--节段脂肪-->
+        <table id="segFat" width="90%" border="0" align="center" cellpadding="0" cellspacing="0">
+            <tr>
+                <td>节段脂肪量(kg)</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr style="font-size:16px; text-align:center;">
+                <td style="width:auto; height:60px; font-size:18px;"><p style="font-size:22px;">{{message.la_fat}}</p>
+                    <p style="color:#999999;font-size:14px;">左上肢脂肪</p></td>
+                <td rowspan="2"><img src="/img/segment.jpg"></td>
+                <td style="width:auto; height:60px; font-size:18px;"><p style="font-size:22px;">{{message.ra_fat}}</p>
+                    <p style="color:#999999;font-size:14px;">右上肢脂肪</p></td>
+            </tr>
+            <tr style="font-size:16px; text-align:center;">
+                <td style="width:auto; height:60px; font-size:18px;"><p style="font-size:22px;">{{message.ll_fat}}</p>
+                    <p style="color:#999999;font-size:14px;">左下肢脂肪</p></td>
+                <td style="width:auto; height:60px; font-size:18px;"><p style="font-size:22px;">{{message.rl_fat}}</p>
+                    <p style="color:#999999;font-size:14px;">右下肢脂肪</p></td>
+            </tr>
+        </table>
+        <br>
+        <!-- ECharts 肌肉评估 -->
+        <div align="center" id="muscleDegree" style="margin:auto; width:90%; height:240px;"></div>
+        <!--节段肌肉-->
+        <table id="segMuscle" width="90%" border="0" align="center" cellpadding="0" cellspacing="0">
+            <tr>
+                <td>节段肌肉量(kg)</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr style="font-size:16px; text-align:center;">
+                <td style="width:auto; height:60px; font-size:18px;"><p style="font-size:22px;">
+                    {{message.la_muscle}}</p>
+                    <p style="color:#999999;font-size:14px;">左上肢肌肉</p></td>
+                <td rowspan="2"><img src="/img/segment.jpg"></td>
+                <td style="width:auto; height:60px; font-size:18px;"><p style="font-size:22px;">
+                    {{message.ra_muscle}}</p>
+                    <p style="color:#999999;font-size:14px;">右上肢肌肉</p></td>
+            </tr>
+            <tr style="font-size:16px; text-align:center;">
+                <td style="width:auto; height:60px; font-size:18px;"><p style="font-size:22px;">
+                    {{message.ll_muscle}}</p>
+                    <p style="color:#999999;font-size:14px;">左下肢肌肉</p></td>
+                <td style="width:auto; height:60px; font-size:18px;"><p style="font-size:22px;">
+                    {{message.rl_muscle}}</p>
+                    <p style="color:#999999;font-size:14px;">右下肢肌肉</p></td>
+            </tr>
+        </table>
+        <br>
+        <!--体重管理-->
+        <h3>体重管理</h3>
+        <table width="90%" border="1" style="border-color:#CCCCCC" align="center" cellpadding="0" cellspacing="0">
+            <tr style="font-size:16px; color:grey">
+                <th width="50%">目标体重(kg)</th>
+                <td>{{message.standard_weight}}</td>
+            </tr>
+            <tr style="font-size:16px; color:grey">
+                <th width="50%">体重控制(kg)</th>
+                <td>{{message.weight_control}}</td>
+            </tr>
+            <tr style="font-size:16px; color:grey">
+                <th width="50%">脂肪控制量(kg)</th>
+                <td>{{message.fat_control}}</td>
+            </tr>
+            <tr style="font-size:16px; color:grey">
+                <th width="50%">肌肉控制量(kg)</th>
+                <td>{{message.muscle_control}}</td>
+            </tr>
+        </table>
+        <br><br>
+
+        <!--按钮组-->
+        <div class="bs-example" data-example-id="simple-table">
+            <table class="table">
+                <td><input class="btn btn-lg btn-warning" type="button" value="打印报告" v-on:click="print()"></td>
+                <td><input class="btn btn-lg btn-info" type="button" value="膳食指导" onclick="diet()"></td>
+                <td><input class="btn btn-lg btn-success" type="button" value="历史记录" onclick="history()"></td>
+                <td><input class="btn btn-lg btn-danger" type="button" value="打印调整" onclick="setCoordinate()"></td>
+            </table>
+        </div>
+
+    </div>
+
+    </body>
+
+    <!--脚本必须放在后面-->
+    <script>
+        var data = {
+            message: "",
+            url: "",
+            bodyType: "--"
+        };
+        //全局变量
+        var dataObj, deviceID, deviceType, testID, UUID, UID, printUrl, Height, BMI, DailyEnergy, localIp;
+        var stWater, stFat, stProtein, stBone, stBMI, stPBF, stVFI, stWHR, stMuscle, stSMM, stWeight;   //标准值
+        var waterScale, fatScale, proteinScale, boneScale, BMIScale, PBFScale, VFIScale, WHRScale, muscleScale,
+            SMMScale;   //刻度值
+        var targetWeight, weightControl, fatControl, muscleControl;
+
+        //采用location.href获取地址栏参数
+        var url = location.href; //取得整个地址栏
+        var urlList = url.split('/');
+        data.url = "/api/" + urlList[3] + "/" + urlList[4] + "/" + urlList[5];  //统一查询地址
+        deviceID = urlList[6];
+
+        //初始化打印标志
+        var printFlag = "OFF";
+
+        function normalScope() {   //计算正常范围
+            var heightValue = parseFloat(dataObj.height);
+            var weightValue = parseFloat(dataObj.weight);
+            var swValue = parseFloat(dataObj.standard_weight);
+            var weight_min, weight_max, SM, fat_min, fat_max, pbf_min, pbf_max, muscle_min, muscle_max, bone_min,
+                bone_max, protein_min, protein_max, water_min, water_max, bmi_min, bmi_max;
+            //weight scope come from BMI scope
+            weight_min = (heightValue / 100) * (heightValue / 100) * 18.5;
+            weight_max = (heightValue / 100) * (heightValue / 100) * 23.9;
+            if (dataObj.sex == "2") {
+                //document.getElementById('sex').innerText = "女";
+                SM = 0.00351 * heightValue * heightValue - 0.4661 * heightValue + 23.04821;
+                fat_min = weightValue * 0.18;
+                fat_max = weightValue * 0.28;
+                pbf_min = 18.0;
+                pbf_max = 28.0;
+            } else {
+                //document.getElementById('sex').innerText = "男";
+                SM = 0.00344 * heightValue * heightValue - 0.37678 * heightValue + 14.40021;
+                fat_min = weightValue * 0.10;
+                fat_max = weightValue * 0.20;
+                pbf_min = 10.0;
+                pbf_max = 20.0;
+            }
+            muscle_min = SM * 0.9;
+            muscle_max = SM * 1.1;
+            bone_min = weightValue * 0.045;
+            bone_max = weightValue * 0.055;
+            protein_min = weightValue * 0.14;
+            protein_max = weightValue * 0.17;
+            water_min = weightValue * 0.6 * 0.9;
+            water_max = weightValue * 0.6 * 1.1;
+            bmi_max = 23.9;
+            bmi_min = 18.5;
+
+            //1C美体版的特殊正常范围
+            if (deviceType == "BCA-1C-2") {
+                //alert("按美体版计算体重和脂肪的正常范围！");
+                weight_min = swValue * 0.9;
+                weight_max = swValue * 1.1;
+                if (dataObj.sex == "2") {
+                    fat_min = swValue * 0.18;
+                    fat_max = swValue * 0.28;
+                } else {
+                    fat_min = swValue * 0.10;
+                    fat_max = swValue * 0.20;
+                }
+            }
+
+            document.getElementById('weight_min').innerText = weight_min.toFixed(1);
+            document.getElementById('weight_max').innerText = weight_max.toFixed(1);
+            document.getElementById('water_min').innerText = water_min.toFixed(1);
+            document.getElementById('water_max').innerText = water_max.toFixed(1);
+            document.getElementById('fat_min').innerText = fat_min.toFixed(1);
+            document.getElementById('fat_max').innerText = fat_max.toFixed(1);
+            document.getElementById('protein_min').innerText = protein_min.toFixed(1);
+            document.getElementById('protein_max').innerText = protein_max.toFixed(1);
+            document.getElementById('bone_min').innerText = bone_min.toFixed(1);
+            document.getElementById('bone_max').innerText = bone_max.toFixed(1);
+            document.getElementById('muscle_min').innerText = muscle_min.toFixed(1);
+            document.getElementById('muscle_max').innerText = muscle_max.toFixed(1);
+            document.getElementById('pbf_min').innerText = pbf_min.toFixed(1);
+            document.getElementById('pbf_max').innerText = pbf_max.toFixed(1);
+            document.getElementById('bmi_min').innerText = bmi_min.toFixed(1);
+            document.getElementById('bmi_max').innerText = bmi_max.toFixed(1);
+
+            //计算理想值
+            stWater = (water_min + water_max) / 2;
+            stFat = (fat_min + fat_max) / 2;
+            stProtein = (protein_min + protein_max) / 2;
+            stBone = (bone_min + bone_max) / 2;
+            stBMI = 21.25;
+            if (dataObj.sex == "1") {
+                stPBF = 15;
+                stWHR = 0.8;
+            } else {
+                stPBF = 25;
+                stWHR = 0.75;
+            }
+            stVFI = 10;
+            stMuscle = SM;
+            stSMM = SM * 0.7;
+
+            var weightFlag, waterFlag, fatFlag, boneFlag, proteinFlag, muscleFlag, pbfFlag, bmiFlag;
+            if (weightValue > weight_max) {
+                weightFlag = "↑";
+                document.getElementById('weight').style = "color:red";
+            } else if (weightValue < weight_min) {
+                weightFlag = "↓";
+                document.getElementById('weight').style = "color:blue";
+            } else {
+                weightFlag = "";
+            }
+            if (dataObj.water > water_max) {
+                waterFlag = "↑";
+                document.getElementById('water').style = "color:red";
+            } else if (dataObj.water < water_min) {
+                waterFlag = "↓";
+                document.getElementById('water').style = "color:blue";
+            } else {
+                waterFlag = "";
+            }
+            if (dataObj.fat > fat_max) {
+                fatFlag = "↑";
+                document.getElementById('fat').style = "color:red";
+            } else if (dataObj.fat < fat_min) {
+                fatFlag = "↓";
+                document.getElementById('fat').style = "color:blue";
+            } else {
+                fatFlag = "";
+            }
+            if (dataObj.bone > bone_max) {
+                boneFlag = "↑";
+                document.getElementById('bone').style = "color:red";
+            } else if (dataObj.bone < bone_min) {
+                boneFlag = "↓";
+                document.getElementById('bone').style = "color:blue";
+            } else {
+                boneFlag = "";
+            }
+            if (dataObj.protein > protein_max) {
+                proteinFlag = "↑";
+                document.getElementById('protein').style = "color:red";
+            } else if (dataObj.protein < protein_min) {
+                proteinFlag = "↓";
+                document.getElementById('protein').style = "color:blue";
+            } else {
+                proteinFlag = "";
+            }
+            if (dataObj.muscle > muscle_max) {
+                muscleFlag = "↑";
+                document.getElementById('muscle').style = "color:red";
+            } else if (dataObj.muscle < muscle_min) {
+                muscleFlag = "↓";
+                document.getElementById('muscle').style = "color:blue";
+            } else {
+                muscleFlag = "";
+            }
+            if (dataObj.pbf > pbf_max) {
+                pbfFlag = "↑";
+                document.getElementById('pbf').style = "color:red";
+            } else if (dataObj.pbf < pbf_min) {
+                pbfFlag = "↓";
+                document.getElementById('pbf').style = "color:blue";
+            } else {
+                pbfFlag = "";
+            }
+            if (dataObj.bmi > bmi_max) {
+                bmiFlag = "↑";
+                document.getElementById('bmi').style = "color:red";
+            } else if (dataObj.bmi < bmi_min) {
+                bmiFlag = "↓";
+                document.getElementById('bmi').style = "color:blue";
+            } else {
+                bmiFlag = "";
+            }
+            document.getElementById('weightFlag').innerText = weightFlag;
+            document.getElementById('waterFlag').innerText = waterFlag;
+            document.getElementById('fatFlag').innerText = fatFlag;
+            document.getElementById('boneFlag').innerText = boneFlag;
+            document.getElementById('proteinFlag').innerText = proteinFlag;
+            document.getElementById('muscleFlag').innerText = muscleFlag;
+            document.getElementById('pbfFlag').innerText = pbfFlag;
+            document.getElementById('bmiFlag').innerText = bmiFlag;
+
+
+        }
+
+
+        var app = new Vue({
+            el: "#app",
+            data: data,
+            created: function () {
+                printFlag = "ON";    //每次刷新页面，打开打印锁
+                this.$http.get(this.url).then(function (response) {
+                    console.log('结果url=' + this.url);
+                    // success callback
+                    this.message = response.body;
+                    //alert(JSON.stringify(this.message));
+                    if (this.message == "FAIL") {
+                        layer.alert("没有这个人的数据");
+                    } else {
+                        dataObj = response.body;
+                        deviceType = dataObj.devicetype;
+                        UUID = dataObj.uuid;
+                        UID = dataObj.uid;
+                        TestID = dataObj.testid;
+                        Height = dataObj.height;
+                        BMR = dataObj.bmr;
+                        BMI = dataObj.bmi;  //用于饮食处方
+
+                        //根据标准体重、BMI计算每日所需能量
+                        //标准体重（kg)= 身高(cm)-100
+                        stWeight = Height - 100;
+                        //BMI按18.5-23-25划分消瘦、正常、超重、肥胖
+                        //每张公斤标准体重的能量需要（极轻体力劳动）：消瘦：35; 正常：30；超重25；肥胖：20；
+                        if (BMI < 18.5) {
+                            DailyEnergy = stWeight * 35;
+                        } else if (BMI >= 18.5 && BMI <= 23) {
+                            DailyEnergy = stWeight * 30;
+                        } else if (BMI > 23 && BMI < 25) {
+                            DailyEnergy = stWeight * 25;
+                        } else if (BMI >= 25) {
+                            DailyEnergy = stWeight * 20;
+                        }
+                        if (DailyEnergy <= BMR) {
+                            DailyEnergy = BMR + 250;
+                        }
+
+                        if (dataObj.body_type == "1") {
+                            this.bodyType = "隐性肥胖型";
+                        } else if (dataObj.body_type == "2") {
+                            this.bodyType = "肌肉不足型";
+                        } else if (dataObj.body_type == "3") {
+                            this.bodyType = "消瘦型";
+                        } else if (dataObj.body_type == "4") {
+                            this.bodyType = "脂肪过多型";
+                        } else if (dataObj.body_type == "5") {
+                            this.bodyType = "健康匀称型";
+                        } else if (dataObj.body_type == "6") {
+                            this.bodyType = "低脂肪型";
+                        } else if (dataObj.body_type == "7") {
+                            this.bodyType = "肥胖型";
+                        } else if (dataObj.body_type == "8") {
+                            this.bodyType = "超重肌肉型";
+                        } else if (dataObj.body_type == "9") {
+                            this.bodyType = "运动员型";
+                        }
+
+                        //1C-2
+                        if (deviceType == "BCA-1C-2") {
+                            if (dataObj.body_type == "1") {
+                                this.bodyType = "H型";
+                            } else if (dataObj.body_type == "2") {
+                                this.bodyType = "矩型";
+                            } else if (dataObj.body_type == "3") {
+                                this.bodyType = "细沙漏型";
+                            } else if (dataObj.body_type == "4") {
+                                this.bodyType = "勺子型";
+                            } else if (dataObj.body_type == "5") {
+                                this.bodyType = "匀称型";
+                            } else if (dataObj.body_type == "6") {
+                                this.bodyType = "沙漏型";
+                            } else if (dataObj.body_type == "7") {
+                                this.bodyType = "苹果型";
+                            } else if (dataObj.body_type == "8") {
+                                this.bodyType = "梯型";
+                            } else if (dataObj.body_type == "9") {
+                                this.bodyType = "梨型";
+                            }
+                        }
+
+
+                        normalScope();                  //显示正常范围
+
+                        //计算柱状图刻度
+                        waterScale = (dataObj.water / stWater).toFixed(2);
+                        fatScale = (dataObj.fat / stFat).toFixed(2);
+                        proteinScale = (dataObj.protein / stProtein).toFixed(2);
+                        boneScale = (dataObj.bone / stBone).toFixed(2);
+                        BMIScale = (dataObj.bmi / stBMI).toFixed(2);
+                        PBFScale = (dataObj.pbf / stPBF).toFixed(2);
+                        VFIScale = (dataObj.vfi / stVFI).toFixed(2);
+                        WHRScale = (dataObj.whr / stWHR).toFixed(2);
+                        muscleScale = (dataObj.muscle / stMuscle).toFixed(2);
+                        SMMScale = (dataObj.smm / stSMM).toFixed(2);
+
+                        //避免反方向划线
+                        if (PBFScale < 0.3) {
+                            PBFScale = 0.3;
+                        } else if (PBFScale > 1.7) {
+                            PBFScale = 1.7;
+                        }
+                        if (BMIScale < 0.3) {
+                            BMIScale = 0.3;
+                        } else if (BMIScale > 1.7) {
+                            BMIScale = 1.7;
+                        }
+                        if (SMMScale < 0.3) {
+                            SMMScale = 0.3;
+                        } else if (SMMScale > 1.7) {
+                            SMMScale = 1.7;
+                        }
+                        if (waterScale < 0.3) {
+                            waterScale = 0.3;
+                        } else if (waterScale > 1.7) {
+                            waterScale = 1.7;
+                        }
+                        if (fatScale < 0.3) {
+                            fatScale = 0.3;
+                        } else if (fatScale > 1.7) {
+                            fatScale = 1.7;
+                        }
+                        if (proteinScale < 0.3) {
+                            proteinScale = 0.3;
+                        } else if (proteinScale > 1.7) {
+                            proteinScale = 1.7;
+                        }
+                        if (boneScale < 0.3) {
+                            boneScale = 0.3;
+                        } else if (boneScale > 1.7) {
+                            boneScale = 1.7;
+                        }
+                        if (VFIScale < 0.3) {
+                            VFIScale = 0.3;
+                        } else if (VFIScale > 1.7) {
+                            VFIScale = 1.7;
+                        }
+                        if (WHRScale < 0.3) {
+                            WHRScale = 0.3;
+                        } else if (WHRScale > 1.7) {
+                            WHRScale = 1.7;
+                        }
+                        if (muscleScale < 0.3) {
+                            muscleScale = 0.3;
+                        } else if (muscleScale > 1.7) {
+                            muscleScale = 1.7;
+                        }
+
+                        //chart
+                        makeChart();
+                    }
+                }, function (response) {
+                    // error callback
+                    alert("获取数据失败！");
+                });
+            },
+            methods: {
+                print: function () {
+                    //alert("只有在测试现场才可以打印报告哟");
+                    /*var urlIP = "/api/ip/" + deviceID;
+                    this.$http.get(urlIP).then(function (response) {  //获取仪器IP
+                        // success callback
+                        localIp = response.body;
+                        printUrl = "http://" + localIp + "/api/print/" + TestID + "/";  //打印地址生成
+                        //alert("打印到："+printUrl+"? +printFlag="+printFlag);
+                        if (printFlag == "ON") {
+                            alert("打印报告单？请确保打印机已放入空白报告纸");
+                            this.$http.get(printUrl);                         //请求本地打印API,只有连接本地WIFI者才能访问
+                            printFlag = "OFF";
+                        } else {
+                            alert("重新查看成绩，才能再次打印！");
+                        }
+                    }, function (response) {
+                        // error callback
+                        localIp = "offline";
+                        alert("仪器未联网，无法打印");
+                    });
+*/
+                    window.location.href = `/report/${urlList[3]}/${urlList[4]}/${urlList[5]}`;
+                }
+            }
+        })
+
+
+        function history() {
+            window.location.href = "/history/" + urlList[4] + "/" + urlList[5];
+        }
+
+        function search() {
+            window.location.href = "/search/";
+        }
+
+        function diet() {
+            window.location.href = "/diet/" + DailyEnergy;  //膳食建议, 传每日热量参数
+        }
+
+        function setCoordinate() {
+            window.location.href = "/offset/" + urlList[3] + "/" + urlList[4] + "/" + urlList[5];
+        }
+
+        function makeChart() {
+            /***********************************图表区******************************************/
+                // 基于准备好的dom，初始化echarts实例
+            var basicChart = echarts.init(document.getElementById('basic'));
+            // 指定图表的配置项和数据
+            var optionBasic = {
+                title: {
+                    text: '基本成分评价'
+                },
+                grid: {
+                    show: true,
+                    x: 50   //坐标右偏移
+                },
+                //color: ['#CC6600'],
+                tooltip: {},
+                yAxis: {
+                    data: ["骨质", "蛋白质", "脂肪", "水分"],
+                },
+                xAxis: {
+                    name: '偏差率（以标准值为1）',
+                    nameLocation: 'center',
+                    nameGap: 20,
+                    min: 0.3,
+                    max: 1.7,
+                    maxInterval: 0.1
+                },
+                series: [{
+                    name: '偏差率',
+                    type: 'bar',
+                    itemStyle: {
+                        normal: {
+                            color: function (params) {
+                                if (params.value > 1.1) {
+                                    return '#CC0000';  //red
+                                } else if (params.value > 0.9 && params.value < 1.1) {
+                                    return '#009900';  //green
+                                } else {
+                                    return '#0000CC';  //blue
+                                }
+                            }
+                        }
+                    },
+                    data: [boneScale, proteinScale, fatScale, waterScale]
+                }]
+            };
+            basicChart.setOption(optionBasic);
+
+            // 肥胖分析图
+            var fatDegreeChart = echarts.init(document.getElementById('fatDegree'));
+            var optionFatDegree = {
+                title: {
+                    text: '肥胖分析'
+                },
+                grid: {
+                    show: true,
+                    x: 60    //坐标右偏移
+                },
+                tooltip: {},
+                yAxis: {
+                    data: ['腰臀比', '内脏脂肪', '体脂率', '体质指数',]
+                },
+                xAxis: {
+                    name: '偏差率（以标准值为1）',
+                    nameLocation: 'center',
+                    nameGap: 20,
+                    min: 0.3,
+                    max: 1.7,
+                    maxInterval: 0.1
+                },
+                series: [{
+                    name: '',
+                    type: 'bar',
+                    itemStyle: {
+                        normal: {
+                            color: function (params) {
+                                if (params.value > 1.1) {
+                                    return '#CC0000';  //red
+                                } else if (params.value > 0.9 && params.value < 1.1) {
+                                    return '#009900';  //green
+                                } else {
+                                    return '#0000CC';  //blue
+                                }
+                            }
+                        }
+                    },
+                    data: [WHRScale, VFIScale, PBFScale, BMIScale]
+                }]
+            };
+            fatDegreeChart.setOption(optionFatDegree);
+
+            // 肌肉分析图
+            var muscleDegreeChart = echarts.init(document.getElementById('muscleDegree'));
+            var optionMuscleDegree = {
+                title: {
+                    text: '肌肉分析'
+                },
+                grid: {
+                    show: true,
+                    x: 60    //坐标右偏移
+                },
+                tooltip: {},
+                yAxis: {
+                    data: ['蛋白质', '骨骼肌', '肌肉']
+                },
+                xAxis: {
+                    name: '偏差率（以标准值为1）',
+                    nameLocation: 'center',
+                    nameGap: 20,
+                    min: 0.3,
+                    max: 1.7,
+                    maxInterval: 0.1
+                },
+                series: [{
+                    name: '',
+                    type: 'bar',
+                    itemStyle: {
+                        normal: {
+                            color: function (params) {
+                                if (params.value > 1.1) {
+                                    return '#CC0000';  //red
+                                } else if (params.value > 0.9 && params.value < 1.1) {
+                                    return '#009900';  //green
+                                } else {
+                                    return '#0000CC';  //blue
+                                }
+                            }
+                        }
+                    },
+                    data: [proteinScale, SMMScale, muscleScale]
+                }]
+            };
+            muscleDegreeChart.setOption(optionMuscleDegree);
+        }
+
+        /***********************************名词解释******************************************/
+        function showScore() {
+            alert("由身体各项成分加权平均计算出的综合健康得分，是从身体成分角度对您健康状况的一种评价。一般高于80分属于良好，70-80分属于平均水平，低于70分则较低。");
+        }
+
+        function showBodyAge() {
+            alert("身体年龄是根据身体成分评分计算出您的身体相当于哪个年龄段的平均体成分。一般评分越高您的身体年龄就会显得越年轻。");
+        }
+
+        function showPBF() {
+            alert("身体内脂肪质量所占体重的百分比。是衡量胖瘦的指标之一。体脂肪较高会导致肥胖和心脑血管疾病风险增高，但脂肪也有很多生理功能，并不是越少越好。应维持合理的体脂率。");
+        }
+
+        function showBMR() {
+            alert("基础代谢是人体每日所需的基础能量,用千卡(kcal)作单位。指人在安静状态下身体维持自身新陈代谢所需的最基本的能量。用于计算每日膳食热量需要时还需考虑日常活动所需的能量。");
+        }
+
+        function showBMI() {
+            alert("缩写为BMI，是衡量体型的常用指标。用体重除以身高的平方计算。BMI较高者相对较胖。但BMI无法区分肌肉和脂肪，所以应结合体脂率来看。我们提供的体型判定功能是更科学的体型划分办法。");
+        }
+
+        function showVFI() {
+            alert("是衡量内脏脂肪含量的指标。与脐断面内脏脂肪面积成正比例。内脏脂肪对于心脑血管疾病有直接关系，高于10则提示腹部内部脂肪较高，高于14则提示心脑血管疾病风险显著增高。");
+        }
+
+        function showLiverRisk() {
+            alert("衡量人患有脂肪肝的风险。可理解为患脂肪肝的可能性有多大。脂肪肝是肝脏组织脂肪化导致肝功能损害的一种慢性疾病，有可能演变为肝硬化等其他肝脏疾病。");
+        }
+
+        //1C隐藏数据或图表
+        $(document).ready(function () {
+            if (deviceID.includes("1C")) {
+                $("#segFat").hide();
+                $("#segMuscle").hide();
+            }
+            ;
+        });
+
+    </script>
+</html>
+

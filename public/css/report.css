@@ -1,0 +1,16 @@
+html,body{
+    margin: 0;
+    padding: 0;
+}
+#report{
+    position: relative;
+    width: 210mm;
+    height: 297mm;
+    background-size: 100%;
+}
+button{
+    position: absolute;
+    background: none;
+    border: none;
+    padding: 0;
+}

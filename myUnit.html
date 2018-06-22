@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>单位信息</title>
+     <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <!--vue.js-->
+    <script src="/js/vue.min.js"></script>
+    <script src="/js/vue-resource.js"></script>
+  </head>
+
+<div class="container-fluid">
+<h2 class="form-signin-heading">已注册单位一览表</h2>
+
+
+
+
+<body>
+
+<div class="bs-example" data-example-id="simple-table">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>单位名称</th>
+          <th>单位编码</th>
+          <th>注册时间</th>
+          <th>查询密码</th>
+        </tr>
+      </thead>
+      <tbody id="upload-data">
+		  <tr v-for="item in items"> 
+			  <td>{{ item.unitname }} </td>
+			  <td>{{ item.uuid }}</td>
+			  <td>{{ item.regtime }}</td>
+			  <td>{{ item.psw }}</td>
+		  </tr>
+      </tbody>
+    </table>
+
+
+</body>
+
+<script>	
+   var records = new Vue({
+        el: '#upload-data',
+        data: {
+		  url: "/api/unitInfo_registered/",
+          items: []
+        },
+        created: function(){
+			 this.$http.get(this.url).then(function(response){
+                 // success callback
+                 var dataObj = response.body;  
+                 if (dataObj == "FAIL"){
+					 alert("没有单位的数据");
+				 }else {
+                     let len = parseInt(dataObj.length);
+                     for (let i=0; i<len;i++){
+	                     this.items.push(dataObj[i]);
+	                 }
+                 }
+                 
+             }, function(response){
+                 // error callback
+                 alert("获取数据失败！");
+             });
+		 }
+      });
+       
+        
+ 
+  
+</script>
+</html>
+

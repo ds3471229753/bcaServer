@@ -1,0 +1,159 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>注册测试人员</title>
+     <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <!--vue.js-->
+    <script src="/js/vue.min.js"></script>
+    <script src="/js/vue-resource.js"></script>
+  </head>
+
+<body>
+<div class="container-fluid">
+<h2 class="form-signin-heading">请填写测试者信息</h2>
+
+
+
+   <div id="app">
+    <div id="myForm" class="form-horizontal">
+	 <table width="80%"  border="0" align="center" cellpadding="0" cellspacing="0">
+		 <tr height="60"><td width="25%"><font color="#FF0000">*</font> 编号</td><td><input type="text" class="form-control" id="UID" placeholder="建议使用手机号,便于记忆"/></td></tr>
+         <tr height="60"><td width="25%"><font color="#FF0000">*</font> 姓名</td><td><input type="text" class="form-control" id="Name" /></td></tr>
+         <tr height="60"><td width="25%"><font color="#FF0000">*</font> 性别</td><td><select class="form-control" id="Sex">
+                                               <option value ="1">男</option>
+                                               <option value ="2">女</option>
+                                           </select></td>
+         </tr>
+         <tr height="60"><td width="25%"><font color="#FF0000">*</font> 身高(cm)</td><td><input type="text" class="form-control" id="Height" /></td></tr>
+         <tr height="60"><td width="25%"><font color="#FF0000">*</font> 出生年份</td><td><input type="text" class="form-control" id="BirthYear" placeholder="只填写出生年份"/></td></tr>
+         <tr height="60"><td width="25%">&nbsp;&nbsp;手机号</td><td><input type="text" class="form-control" id="Phone" /></td></tr>
+         <tr height="60"><td width="25%"><font color="#FF0000">*</font> 单位编码</td><td><input type="text" class="form-control" id="UUID" placeholder="如无，请填写1"/></td></tr>
+         <tr height="60"><td width="25%">&nbsp;&nbsp;备注</td><td><input type="text" class="form-control" id="Note" /></td></tr>
+         <tr height="60"><td>       </td><td><button class="btn btn-lg btn-primary btn-block" v-on:click="register()">注册</button></td></tr>
+         <tr height="60"><td width="10%"></td><td id="Notification">{{message}}</td></tr>
+         
+    </table>
+   </div>
+   </div>
+   
+  </body>
+  
+  
+<script>
+   var data = {
+			 url: "/api/personInfo",
+			 deviceID: "",
+             message: "单位编码请咨询仪器管理员"
+   };
+   
+   var person = {
+	   uuid: "",
+	   uid: "",
+	   name: "",
+	   phone: "",
+	   sex: "",
+	   height: "",
+	   birthYear: "",
+	   note: ""
+   }
+   
+   //采用location.href获取地址栏deviceID参数
+    var url=location.href; //取得整个地址栏
+    var urlList = url.split('/');
+    var deviceID = urlList[4];  
+    //alert("deviceID="+deviceID);
+    
+    var app = new Vue({
+         el: "#app",
+         data: data,    
+         created: function(){
+			 
+		 },
+		 methods:{
+			 register:function(){
+				 //对输入项进行校验
+				 var date = new Date();
+                 var year =date.getFullYear();       
+                 if ($('#UID').val() == ""){
+		             alert("请填写编号");
+                 }else if ($('#Name').val() == ""){
+		             alert("请填写姓名");
+                 }else if ($('#Height').val() == ""){
+		             alert("请填写身高");
+                 }else if ($('#Height').val() > 250 ){
+		             alert("身高过高");
+                 }else if ($('#Height').val() < 100 ){
+		             alert("身高过低");
+                 }else if ($('#Height').val().includes("。" )){
+		             alert("身高含有非法字符");
+		         }else if ($('#BirthYear').val() == ""){
+		             alert("请填写出生年份");
+		         }else if ($('#BirthYear').val().length != 4){
+		             alert("出生年份格式不正确");
+                 }else if ($('#BirthYear').val() < 1900){
+		             alert("出生年份过早");
+                 }else if ($('#BirthYear').val() > year){
+		             alert("出生年份超过当前年份");
+		         }else if ($('#UUID').val() == ""){
+		             alert("请输入单位编号");
+                 }else {
+					 person.uuid = $('#UUID').val();
+					 person.uid = $('#UID').val();
+					 person.name = $('#Name').val();
+					 person.sex = $('#Sex').val();
+					 person.phone = $('#Phone').val();
+					 person.height = $('#Height').val();
+					 person.birthYear = $('#BirthYear').val();
+					 person.note = $('#Note').val();
+					 
+                     this.$http.post(this.url, person).then(function(response){
+                        // success callback
+                        if (response.data == "FAIL"){
+							this.message = "单位编码不存在，请咨询管理员";
+					    }else {
+                            this.message = "注册成功，可以测试了。";
+                            goTest();   //跳转至测试页面
+                        }
+                    }, function(response){
+                        // error callback
+                        this.message = "人员注册失败！请检查网络。";
+                    });
+                 }
+		     }
+		  }
+     })	
+         
+	//表单验证函数
+  function check_submit(){
+     if ($('#UID').val() == ""){
+		  alert("请填写编号");
+		  return false;
+     }else {
+		 data.url = "/api/test/"+urlList[4]+"/"+$('#UID').val();
+         //alert(data.url);
+		 return true;
+     }
+   }
+  
+  function getResult() {
+	  var uid = $('#UID').val();
+	  //alert(uid);
+	  window.location.href="/result/"+uid; 
+  }
+  function register() {
+	  window.location.href="/registerPerson/"; 
+  }
+  function goTest() {
+	  window.location.href="/test/"+deviceID+"/"+person.uuid+"/"+person.uid; 
+  }
+
+</script>
+</html>
+

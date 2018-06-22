@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>坐标设置</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <!--vue.js-->
+    <script src="/js/vue.min.js"></script>
+    <!--<script src="/js/vue-resource.js"></script>-->
+    <!--axios.js-->
+    <script src="/js/axios.min.js"></script>
+    <!--layui-layer-->
+    <script src="/js/layer.js"></script>
+</head>
+<body>
+<div id="app" class="center-block" style="width: 600px;position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%);">
+    <table class="table table-responsive">
+        <tr>
+            <td style="text-align: center">横向偏移量<br><i style="font-size: 50%;color: grey">(左右调整打印位置，向右请加大数字，向左请减小数字)</i></td>
+            <td><input type="number" value="0" v-model="x_offset"></td>
+        </tr>
+        <tr>
+            <td style="text-align: center">纵向偏移量<br><i style="font-size: 50%;color: grey">(上下调整打印位置，向下请加大数字，向上请减小数字)</i></td>
+            <td><input type="number" value="0" v-model="y_offset"></td>
+        </tr>
+    </table>
+
+    <div class="center-block" style="width: 180px;">
+        <button class="pull-left" @click="confirm" style="width: 80px">确认</button>
+        <button class="pull-right" @click="goBack" style="width: 80px">返回</button>
+    </div>
+</div>
+<script>
+    let vm = new Vue({
+        el: '#app',
+        data: {
+            x_offset: 0,
+            y_offset: 0,
+        },
+        methods: {
+            confirm() {
+                window.location.href = `/report${location.href.split('offset')[1]}?x_offset=${this.x_offset}&y_offset=${this.y_offset}`;
+            },
+            goBack() {
+                window.location.href = `${location.href.split('offset')[1]}`;
+            }
+        }
+    })
+</script>
+</body>
+</html>

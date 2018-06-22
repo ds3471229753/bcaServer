@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>在线设备一览</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <!--vue.js-->
+    <script src="/js/vue.min.js"></script>
+    <script src="/js/vue-resource.js"></script>
+</head>
+
+<div class="container-fluid">
+    <h2 class="form-signin-heading">在线设备一览</h2>
+
+    <body>
+
+    <div id="dataSection" class="bs-example" data-example-id="simple-table">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>设备编号</th>
+                <th>本地IP</th>
+                <th>使用单位</th>
+                <th>登录时间</th>
+                <th>状态</th>
+            </tr>
+            </thead>
+            <tbody id="upload-data">
+            <tr v-for="item in items">
+                <td><a :href="'/monitor/'+ item.deviceid ">{{item.deviceid }}</a></td>
+                <td>{{ item.localip }}</td>
+                <td>{{ item.holder }}</td>
+                <td>{{ item.regtime }}</td>
+                <td>{{ item.device_state }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    </body>
+
+    <script>
+        let apiurl = "/api/deviceState";
+        var records = new Vue({
+            el: '#upload-data',
+            data: {
+                items: []
+            },
+            created: function () {
+                this.$http.get(apiurl).then(function (response) {
+                    // success callback
+                    console.log(response.body);
+                    var dataObj = response.body;
+                    //alert(JSON.stringify(dataObj));
+                    if (dataObj == "FAIL") {
+                        this.items = [{deviceid: "", localip: "", holder: "", regtime: "", device_state: ""}];
+                    } else {
+                        var len = parseInt(dataObj.length);
+                        for (var i = 0; i < len; i++) {
+                            this.items.push(dataObj[i]);
+                        }
+                    }
+                }, function (response) {
+                    // error callback
+                    alert("获取数据失败！");
+                });
+            }
+        })
+
+
+    </script>
+</html>
+

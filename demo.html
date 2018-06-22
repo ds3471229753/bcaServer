@@ -1,0 +1,113 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>查看身体成分</title>
+     <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <!--vue.js-->
+    <script src="/js/vue.min.js"></script>
+    <script src="/js/vue-resource.js"></script>
+  </head>
+
+
+  
+  <body>
+
+  <!--这是我们的View,必须放在脚本前面-->
+   <div id="app">
+        {{ message }}
+   </div>
+   <div id="app-2">
+	   <span v-bind:title="message">
+		   鼠标悬浮查看动态绑定的提示信息！
+	   </span>
+   </div>
+   <div id="app-3">
+     <p v-if="seen">现在你看到我了</p>
+   </div>
+   <div id="app-4">
+	   <ol>
+		   <li v-for="todo in todos">{{todo.text}}</li>
+	   </ol>
+   </div>
+   <div id="app-5">
+     <p>{{message}}</p>
+     <button v-on:click="reverseMessage">逆转消息</button>
+   </div>
+   <div id="app-6">
+        <p>{{ message }}</p>
+        <input v-model="message">
+   </div>
+   <!--脚本必须放在后面-->
+	 <script>
+        var app = new Vue({
+            el: "#app",
+            data: {
+				message: "Hello Vue!"
+            },
+            created: function(){
+			    this.$http.get('/api/result/TFHT/1').then(response => {
+                    // success callback
+                    this.message = "response.body";
+                }, response => {
+                   // error callback
+                   this.message =  "FAIL";
+                });
+		    }
+        })	
+        
+        var app2 = new Vue({
+			el: "#app-2",
+			data: {
+				message: "页面加载于" + new Date().toLocaleString()
+			}
+		});
+		
+		var app3 = new Vue({
+			el: "#app-3",
+			data: {
+				seen: true
+			}
+		});
+		
+	   var app4 = new Vue({
+			el: "#app-4",
+			data: {
+				todos: [
+				  {text: "学习"},
+				  {text: "工作"},
+				  {text: "睡觉"}
+				]
+			}
+		});
+		
+	   var app5 = new Vue({
+			el: "#app-5",
+			data: {
+				message: "粮票好像对我说"
+			},
+			methods: {
+				reverseMessage: function() {
+					this.message = this.message.split('').reverse().join('');
+				}
+		   }
+		});
+		
+		var app6 = new Vue({
+			el: "#app-6",
+			data: {
+				message: "Hello World"
+			}
+		});
+    </script>
+
+
+  </body>
+</html>
+

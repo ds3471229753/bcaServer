@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>单位信息完善</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <!--vue.js-->
+    <script src="/js/vue.min.js"></script>
+    <script src="/js/vue-resource.js"></script>
+    <!--axios.js-->
+    <script src="/js/axios.min.js"></script>
+    <!--layui-layer-->
+    <script src="/js/layer.js"></script>
+</head>
+<body>
+<div id="unit_update">
+    <h2 class="form-signin-heading">请完善单位信息</h2>
+
+    <div id="myForm" class="form-horizontal">
+        <table width="80%" border="0" align="center" cellpadding="0" cellspacing="0">
+            <tr height="60">
+                <td width="25%"> 管理者姓名</td>
+                <td><input type="text" class="form-control" v-model="admin_name"/></td>
+            </tr>
+            <tr height="60">
+                <td width="25%"> 管理者电话</td>
+                <td><input type="text" class="form-control" v-model="admin_phone"/></td>
+            </tr>
+            <tr height="60">
+                <td width="25%"><font color="#FF0000">*</font> 单位名称</td>
+                <td><input type="text" class="form-control" disabled v-model="unitname" style="background: #e1e1e1"/>
+                </td>
+            </tr>
+            <tr height="60">
+                <td width="25%"><font color="#FF0000">*</font> 单位编码</td>
+                <td><input type="text" class="form-control" disabled v-model="uuid" style="background: #e1e1e1"/></td>
+            </tr>
+            <tr height="60">
+                <td width="25%"><font color="#FF0000">*</font> 单位密码</td>
+                <td><input type="password" class="form-control" placeholder="用于单位登录查询" v-model="psw"/></td>
+            </tr>
+            <tr height="60">
+                <td width="25%"></td>
+                <td id="submit">
+                    <button class="btn btn-lg btn-primary btn-block" @click="submit">提交</button>
+                </td>
+            </tr>
+            <tr height="60">
+                <td width="25%"></td>
+                <td id="Notification">{{message}}</td>
+            </tr>
+            <tr height="60">
+                <td width="25%"></td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<script>
+    new Vue({
+        el: '#unit_update',
+        data: {
+            message: '单位编码自行编制，一般使用单位名称的字头缩写，请记住',
+            admin_name: '',
+            admin_phone: '',
+            uuid: '',
+            unitname: '',
+            psw: '',
+        },
+        mounted: function () {
+            let _this = this;
+            axios.get('/api/unitQuery/')
+                .then(res => {
+                    console.log(res.data);
+                    _this.admin_name = res.data.admin_name;
+                    _this.admin_phone = res.data.admin_phone;
+                    _this.uuid = res.data.uuid;
+                    _this.unitname = res.data.unitname;
+                })
+        },
+        methods: {
+            submit() {
+                let _this = this;
+                if (_this.psw === '') {
+                    layer.msg('请输入密码');
+                } else {
+                    axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+                    Vue.prototype.$axios = axios;
+                    let params = new URLSearchParams();
+                    params.append('admin_name', _this.admin_name);
+                    params.append('admin_phone', _this.admin_phone);
+                    params.append('psw', _this.psw);
+                    this.$axios({
+                        method: 'post',
+                        url: '/api/updateUnit/',
+                        data: params
+                    }).then(res => {
+                        console.log(res.data);
+                        if (res.data === 'OK') {
+                            layer.alert('信息已完善', function () {
+                                window.location.href = '/unitInfo/';
+                            })
+                        } else {
+                            layer.alert('信息完善失败，请重试');
+                        }
+                    }).catch(err => console.error(err));
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>

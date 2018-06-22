@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>人员列表</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <!--vue.js-->
+    <script src="/js/vue.min.js"></script>
+    <!--<script src="/js/vue-resource.js"></script>-->
+    <!--axios.js-->
+    <script src="/js/axios.min.js"></script>
+    <!--layui-layer-->
+    <script src="/js/layer.js"></script>
+    <!--jspdf.js-->
+    <script src="/js/jspdf.min.js"></script>
+    <!--report.css-->
+    <link rel="stylesheet" href="/css/report.css">
+</head>
+<body>
+<div id="report" class="center-block" :style="bgImage">
+    <button v-for="(msg,key,index) in message"
+            :key="index"
+            :style="btn[key]"
+            :value="key"
+            v-if="key!=='uid'"
+    >
+        <template v-if="key==='name'">{{message.uid}}/{{msg}}</template>
+        <div v-else-if="key === 'body_type'" style="width: 0mm;height: 0mm;border: 2mm solid black"></div>
+        <div v-else-if="key === 'weightline'"></div>
+        <div v-else-if="key === 'muscleline'"></div>
+        <div v-else-if="key === 'fatline'"></div>
+        <div v-else-if="key === 'fatline_copy'"></div>
+        <div v-else-if="key === 'proteinline'"></div>
+        <div v-else-if="key === 'pbfline'"></div>
+        <div v-else-if="key === 'boneline'"></div>
+        <div v-else-if="key === 'waterline'"></div>
+        <div v-else-if="key === 'waterline_copy'"></div>
+        <div v-else-if="key === 'smmline'"></div>
+        <div v-else-if="key === 'bmiline'"></div>
+        <div v-else-if="key === 'whrline'"></div>
+        <div v-else-if="key === 'vfiline'"></div>
+        <div v-else-if="key === 'tr_fatline'"></div>
+        <template v-else-if="key === 'sex'">&radic;</template>
+        <template v-else-if="key === 'devicetype'"></template>
+        <template v-else-if="key === 'bmi'">&radic;</template>
+        <template v-else-if="key === 'whrtrue'">&radic;</template>
+        <template v-else-if="key === 'bonetrue'">&radic;</template>
+        <template v-else-if="key === 'edematrue'">&radic;</template>
+        <template v-else-if="key === 'smmtrue'">&radic;</template>
+        <template v-else-if="key === 'pbftrue' || key === 'pbftrue_copy' || key === 'proteintrue'">&radic;</template>
+        <template v-else-if="key === 'up_muscle' || key === 'down_muscle' || key === 'balance'">&radic;</template>
+        <template v-else-if="key === 'pbf'">{{msg}}%</template>
+        <template v-else>{{msg}}</template>
+    </button>
+    <!--<div style="width: 0mm;height: 0mm;border: 2mm solid black"></div>-->
+</div>
+<script src="/js/report.js"></script>
+<script>
+    /*$(function () {
+        window.print();
+    });*/
+    //设置偏移坐标
+</script>
+</body>
+</html>

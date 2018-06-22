@@ -1,0 +1,156 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>饮食建议</title>
+     <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+     <!--vue.js-->
+    <script src="/js/vue.min.js"></script>
+    <script src="/js/vue-resource.js"></script>
+  </head>
+
+
+  
+  <body style="text-align:center">
+	  <br>
+
+	  <h2>膳食指导</h2>
+	  <br>
+
+    <div id="app">
+     <div style="margin:0 auto; width:90%">
+		<h4 align="left">您的全天热量需求为&nbsp;{{DailyEnergy}} &nbsp;千卡</h4>
+		<p align="left">*仅适用于极轻体力劳动者（如办公室人员）</p>
+		 <div class="panel panel-primary">
+            <div class="panel-heading">三餐热量分配比例</div>
+	        <table class="table">
+	             <tr><td></td><td>早餐</td><td>午餐</td><td>晚餐</td></tr>
+	             <tr><td>比例</td><td>30%</td><td>40%</td><td>30%</td></tr>
+	             <tr><td>千卡</td><td>{{breakfastEnergy}}</td><td>{{lunchEnergy}}</td><td>{{dinnerEnergy}}</td></tr>
+	       </table>
+	     </div>
+	 </div>
+	 
+	 <br>
+	 <div style="margin:0 auto; width:90%">
+		 <div class="panel panel-success">
+            <div class="panel-heading">早餐推荐比例</div>
+	        <table class="table">
+	             <tr><td></td><td>主食（谷物、杂粮、薯类，碳水化合物）</td><td>肉类（蛋白质）</td></tr>
+	             <tr><td>比例</td><td>60%</td><td>18%</td></tr>
+	             <tr><td>千卡</td><td>{{breakfastEnergy_maple}}</td><td>{{breakfastEnergy_meat}}</td></tr>
+	       </table>
+	     </div>
+	 </div>
+   
+   	 <div style="margin:0 auto; width:90%">
+		 <div class="panel panel-warning">
+            <div class="panel-heading">午餐推荐比例</div>
+	        <table class="table">
+	             <tr><td></td><td>主食（谷物、杂粮、薯类，碳水化合物）</td><td>肉类（荤菜，蛋白质）</td></tr>
+	             <tr><td>比例</td><td>60%</td><td>20%</td></tr>
+	             <tr><td>千卡</td><td>{{lunchEnergy_maple}}</td><td>{{lunchEnergy_meat}}</td></tr>
+	       </table>
+	     </div>
+	 </div>
+	 
+	  <div style="margin:0 auto; width:90%">
+		 <div class="panel panel-danger">
+            <div class="panel-heading">晚餐推荐比例</div>
+	        <table class="table">
+	             <tr><td></td><td>主食（谷物、杂粮、薯类，碳水化合物）</td><td>肉类（荤菜，蛋白质）</td></tr>
+	             <tr><td>比例</td><td>50%</td><td>15%</td></tr>
+	             <tr><td>千卡</td><td>{{dinnerEnergy_maple}}</td><td>{{dinnerEnergy_meat}}</td></tr>
+	       </table>
+	     </div>
+	 </div>
+	 
+	 <p>*以下蔬果、奶类摄入量以2016膳食宝塔推荐数据为准</p>
+	 <div style="margin:0 auto; width:90%">
+		 <div class="panel panel-primary">
+	        <table class="table">
+	             <tr><td>早餐</td><td>蔬菜类</td><td>水果类</td><td>奶类</td></tr>
+	             <tr><td>比例</td><td>20%</td><td>20%</td><td>60%</td></tr>
+	             <tr><td>重量(克)</td><td>60-100</td><td>40-70</td><td>180</td></tr>
+	       </table>
+	     </div>
+	     
+	     <div class="panel panel-primary">
+	        <table class="table">
+	             <tr><td>中餐</td><td>蔬菜类</td><td>水果类</td><td>奶类</td></tr>
+	             <tr><td>比例</td><td>40%</td><td>40%</td><td>0%</td></tr>
+	             <tr><td>重量(克)</td><td>120-200</td><td>80-140</td><td>0</td></tr>
+	       </table>
+	     </div>
+	     
+	     <div class="panel panel-primary">
+	        <table class="table">
+	             <tr><td>晚餐</td><td>蔬菜类</td><td>水果类</td><td>奶类</td></tr>
+	             <tr><td>比例</td><td>40%</td><td>40%</td><td>40%</td></tr>
+	             <tr><td>重量(克)</td><td>120-200</td><td>80-140</td><td>120</td></tr>
+	       </table>
+	     </div>
+	     
+	     
+	 </div>
+	 <br>
+	 
+     <br>
+     <div style="margin:0 auto; width:90%">
+		 <button class="btn btn-lg btn-warning btn-block" onclick=food()>膳食宝塔图示</button>
+	 </div>
+
+  </div>
+  
+  </body>
+  
+  
+  <script>
+	var data = {
+		    breakfastEnergy: "",
+		    lunchEnergy:"",
+		    dinnerEnergy:"",
+		    breakfastEnergy_maple: "",
+		    lunchEnergy_maple:"",
+		    dinnerEnergy_maple:"",
+		    breakfastEnergy_meat: "",
+		    lunchEnergy_meat:"",
+		    dinnerEnergy_meat:""
+         };
+     var dataObj,deviceID,uuid,uid,Height,BMI,stWeight,DailyEnergy;  //全局变量
+     
+     
+    //采用location.href获取地址栏参数
+    var url=location.href; //取得整个地址栏
+    var urlList = url.split('/');
+    DailyEnergy = parseFloat(urlList[4]);
+    //alert(DailyEnergy);
+	
+	var app = new Vue({
+         el: "#app",
+         data:data,
+         created: function(){	 
+             this.breakfastEnergy = DailyEnergy * 0.3;
+             this.lunchEnergy = DailyEnergy * 0.4;
+             this.dinnerEnergy = DailyEnergy * 0.3;
+             this.breakfastEnergy_maple = parseInt(this.breakfastEnergy * 0.6);
+             this.breakfastEnergy_meat = parseInt(this.breakfastEnergy * 0.18);
+             this.lunchEnergy_maple = parseInt(this.lunchEnergy * 0.6);
+             this.lunchEnergy_meat = parseInt(this.lunchEnergy * 0.2);
+             this.dinnerEnergy_maple = parseInt(this.dinnerEnergy * 0.5);
+             this.dinnerEnergy_meat = parseInt(this.dinnerEnergy * 0.15);
+		 }
+     });
+	
+    function food() {
+	  window.location.href="/food"; 
+    }
+  </script>
+</html>
+

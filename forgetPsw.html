@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>联系客服</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <script src="/js/jquery.min.js"></script>
+</head>
+<body>
+<div style="text-align: center">
+    <h2>同方健康在线数据管理系统</h2>
+    <br>
+    <p>忘记密码，请拨打客服电话<strong><i style="color: red;font-size: 20px">010 6298 6970</i></strong></p>
+    <h2>或</h2>
+    <p>发送邮件到邮箱<strong><i style="color: red;font-size: 20px">sduan@tfht.com.cn</i></strong></p>
+    <p>找回密码</p>
+    <br>
+    <a href="/login" class="btn btn-primary center-block" style="width: 80px">返回</a>
+    <button id="btn" class="btn btn-primary">生成PDF</button>
+</div>
+<script>
+    $(function () {
+        $('#btn').on('click',function () {
+            $('#btn').css('display','none');
+            window.print();
+        })
+    })
+</script>
+</body>
+</html>

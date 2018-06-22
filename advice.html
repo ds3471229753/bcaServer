@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>建议</title>
+    <!--Bootstrap core CSS-->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <!--vue.js-->
+    <script src="/js/vue.min.js"></script>
+    <!--axios.js-->
+    <script src="/js/axios.min.js"></script>
+    <!--layui-layer-->
+    <script src="/js/layer.js"></script>
+</head>
+<body>
+<div id="advice_content" style="padding: 15px">
+    <!--tab标签页-->
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a href="#sport_advice" data-toggle="tab">运动建议</a>
+        </li>
+        <li>
+            <a href="#nutrition_advice" data-toggle="tab">营养建议</a>
+        </li>
+        <li>
+            <a href="#cure_advice" data-toggle="tab">治疗建议</a>
+        </li>
+    </ul>
+
+    <!--建议输入框-->
+    <div class="tab-content">
+        <div class="tab-pane fade in active" id="sport_advice">
+            <textarea name="sportAdvic" class="form-control" rows="10" v-model="sport_advice"
+                      placeholder="根据您的产品与服务，写下您对会员的运动建议"></textarea>
+        </div>
+        <div class="tab-pane fade" id="nutrition_advice">
+            <textarea name="nutritionAdvice" class="form-control" rows="10" v-model="nutrition_advice"
+                      placeholder="根据您的产品与服务，写下您对会员的营养建议"></textarea>
+        </div>
+        <div class="tab-pane fade" id="cure_advice">
+            <textarea name="cureAdvice" class="form-control" rows="10" v-model="cure_advice"
+                      placeholder="根据您的产品与服务，写下您对会员的治疗建议"></textarea>
+        </div>
+    </div>
+
+    <!--提交按钮-->
+    <div style="margin: 20px auto;width: 200px">
+        <button class="btn btn-primary" @click="submitAdvice" style="width: 45%">提交</button>
+        <button class="btn btn-primary" @click="backup" style="width: 45%;float: right">返回</button>
+    </div>
+</div>
+
+<script>
+    let vm = new Vue({
+        el: '#advice_content',
+        data: {
+            sport_advice: '',
+            nutrition_advice: '',
+            cure_advice: ''
+        },
+        mounted: function () {
+            let _this = this;
+            axios.get('/api/searchAdvice/')
+                .then(res => {
+                    console.log(res.data);
+                    _this.sport_advice = res.data.sport_advice;
+                    _this.nutrition_advice = res.data.nutrition_advice;
+                    _this.cure_advice = res.data.cure_advice;
+                }).catch(err => console.error(err));
+        },
+        methods: {
+            submitAdvice() {
+                axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+                Vue.prototype.$axios = axios;
+                var params = new URLSearchParams();
+                params.append('sport_advice', vm.sport_advice);
+                params.append('nutrition_advice', vm.nutrition_advice);
+                params.append('cure_advice', vm.cure_advice);
+                this.$axios({
+                    method: 'post',
+                    url: 'api/adviceSubmit',
+                    data: params
+                }).then(function (res) {
+                    if (res.data === 'OK') {
+                        layer.alert('建议提交成功', {icon: 1});
+                    } else {
+                        layer.alert('建议提交失败', {icon: 2});
+                    }
+                }).catch(err => console.error(err));
+            },
+            backup() {
+                window.location.href = '/unitInfo/';
+            }
+        }
+    });
+</script>
+</body>
+</html>

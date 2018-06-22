@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>登录提示</title>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="/js/jquery.min.js"></script>
+    <!--layui-layer-->
+    <script src="/js/layer.js"></script>
+</head>
+<body>
+<script>
+    $(function () {
+        layer.confirm('您尚未登录，是否立即登录？', {
+            btn: ['是的','稍后'] //按钮
+        }, function(){
+            window.location.href = '/login';
+        }, function(){
+            window.location.href = '/';
+        });
+    })
+</script>
+</body>
+</html>

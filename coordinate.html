@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>坐标设置</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <!--vue.js-->
+    <script src="/js/vue.min.js"></script>
+    <!--<script src="/js/vue-resource.js"></script>-->
+    <!--axios.js-->
+    <script src="/js/axios.min.js"></script>
+    <!--layui-layer-->
+    <script src="/js/layer.js"></script>
+    <style>
+        table{
+            width: 100%;
+        }
+        td{
+            padding: 2px 0;
+            width: 120px;
+        }
+        input{
+            padding-left: 10px;
+            width: 100px;
+        }
+        .tr-bg{
+            background: lightblue;
+            height: 35px;
+        }
+        h3{
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+<div id="app" class="center-block" style="width: 800px">
+    <!--tab标签页-->
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a href="#BCA-1B" data-toggle="tab" @click="queryCoordinate('BCA-1B')">BCA-1B</a>
+        </li>
+        <li>
+            <a href="#BCA-1C-2" data-toggle="tab" @click="queryCoordinate('BCA-1C-2')">BCA-1C 美体版</a>
+        </li>
+        <li>
+            <a href="#BCA-1D" data-toggle="tab" @click="queryCoordinate('BCA-1D')">BCA-1D</a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane fade in active" id="BCA-1B">
+            <table>
+                <tr>
+                    <th>名称</th>
+                    <th>横坐标</th>
+                    <th>纵坐标</th>
+                </tr>
+                <tr id="JBXX_B" class="tr-bg">
+                    <td colspan="3">
+                        <h3>基本信息</h3>
+                    </td>
+                </tr>
+                <tr>
+                    <td>编号/姓名:</td>
+                    <td><input type="number" v-model="coordinate.name_x"></td>
+                    <td><input type="number" v-model="coordinate.name_y"></td>
+                </tr>
+                <tr>
+                    <td>性别:</td>
+                    <td><input type="number" v-model="coordinate.sex_x"></td>
+                    <td><input type="number" v-model="coordinate.sex_y"></td>
+                </tr>
+                <tr>
+                    <td>年龄:</td>
+                    <td><input type="number" v-model="coordinate.age_x"></td>
+                    <td><input type="number" v-model="coordinate.age_y"></td>
+                </tr>
+                <tr>
+                    <td>身高:</td>
+                    <td><input type="number" v-model="coordinate.height_x"></td>
+                    <td><input type="number" v-model="coordinate.height_y"></td>
+                </tr>
+                <tr>
+                    <td>测试时间:</td>
+                    <td><input type="number" v-model="coordinate.testdate_x"></td>
+                    <td><input type="number" v-model="coordinate.testdate_y"></td>
+                </tr>
+                <tr>
+                    <td>健康评分:</td>
+                    <td><input type="number" v-model="coordinate.score_x"></td>
+                    <td><input type="number" v-model="coordinate.score_y"></td>
+                </tr>
+                <tr>
+                    <td>身体年龄:</td>
+                    <td><input type="number" v-model="coordinate.body_age_x"></td>
+                    <td><input type="number" v-model="coordinate.body_age_y"></td>
+                </tr>
+            </table>
+            <table>
+                <tr id="RTCF_B" class="tr-bg"><td colspan="3"><h3>人体成分</h3></td></tr>
+                <tr>
+                    <td>脂肪比例:</td>
+                    <td><input type="number" v-model="coordinate.pbf_x"></td>
+                    <td><input type="number" v-model="coordinate.pbf_y"></td>
+                </tr>
+                <tr>
+                    <td>脂肪量:</td>
+                    <td><input type="number" v-model="coordinate.fat_x"></td>
+                    <td><input type="number" v-model="coordinate.fat_y"></td>
+                </tr>
+                <tr>
+                    <td>脂肪正常范围:</td>
+                    <td><input type="number" v-model="coordinate.fat_range_x"></td>
+                    <td><input type="number" v-model="coordinate.fat_range_y"></td>
+                </tr>
+                <tr>
+                    <td>骨质比例:</td>
+                    <td><input type="number" v-model="coordinate.bone_scale_x"></td>
+                    <td><input type="number" v-model="coordinate.bone_scale_y"></td>
+                </tr>
+                <tr>
+                    <td>骨质量:</td>
+                    <td><input type="number" v-model="coordinate.bone_x"></td>
+                    <td><input type="number" v-model="coordinate.bone_y"></td>
+                </tr>
+                <tr>
+                    <td>骨质正常范围:</td>
+                    <td><input type="number" v-model="coordinate.bone_range_x"></td>
+                    <td><input type="number" v-model="coordinate.bone_range_y"></td>
+                </tr>
+                <tr>
+                    <td>蛋白质比例:</td>
+                    <td><input type="number" v-model="coordinate.protein_scale_x"></td>
+                    <td><input type="number" v-model="coordinate.protein_scale_y"></td>
+                </tr>
+                <tr>
+                    <td>蛋白质量:</td>
+                    <td><input type="number" v-model="coordinate.protein_x"></td>
+                    <td><input type="number" v-model="coordinate.protein_y"></td>
+                </tr>
+                <tr>
+                    <td>蛋白质正常范围:</td>
+                    <td><input type="number" v-model="coordinate.protein_range_x"></td>
+                    <td><input type="number" v-model="coordinate.protein_range_y"></td>
+                </tr>
+                <tr>
+                    <td>水分比例:</td>
+                    <td><input type="number" v-model="coordinate.water_scale_x"></td>
+                    <td><input type="number" v-model="coordinate.water_scale_y"></td>
+                </tr>
+                <tr>
+                    <td>水分量:</td>
+                    <td><input type="number" v-model="coordinate.water_x"></td>
+                    <td><input type="number" v-model="coordinate.water_y"></td>
+                </tr>
+                <tr>
+                    <td>水分正常范围:</td>
+                    <td><input type="number" v-model="coordinate.water_range_x"></td>
+                    <td><input type="number" v-model="coordinate.water_range_y"></td>
+                </tr>
+                <tr>
+                    <td>细胞内液:</td>
+                    <td><input type="number" v-model="coordinate.icw_x"></td>
+                    <td><input type="number" v-model="coordinate.icw_y"></td>
+                </tr>
+                <tr>
+                    <td>细胞外液:</td>
+                    <td><input type="number" v-model="coordinate.ecw_x"></td>
+                    <td><input type="number" v-model="coordinate.ecw_y"></td>
+                </tr>
+                <tr>
+                    <td>总水分:</td>
+                    <td><input type="number" v-model="coordinate.water_copy_x"></td>
+                    <td><input type="number" v-model="coordinate.water_copy_y"></td>
+                </tr>
+                <tr>
+                    <td>肌肉:</td>
+                    <td><input type="number" v-model="coordinate.muscle_x"></td>
+                    <td><input type="number" v-model="coordinate.muscle_y"></td>
+                </tr>
+                <tr>
+                    <td>去脂体重:</td>
+                    <td><input type="number" v-model="coordinate.lbm_x"></td>
+                    <td><input type="number" v-model="coordinate.lbm_y"></td>
+                </tr>
+                <tr>
+                    <td>体重:</td>
+                    <td><input type="number" v-model="coordinate.weight_x"></td>
+                    <td><input type="number" v-model="coordinate.weight_y"></td>
+                </tr>
+            </table>
+            <table>
+                <tr id="JBPG_B" class="tr-bg"><td colspan="3"><h3>基本评估</h3></td></tr>
+                <tr>
+                    <td>体重线:</td>
+                    <td><input type="number" v-model="coordinate.weightline_x"></td>
+                    <td><input type="number" v-model="coordinate.weightline_y"></td>
+                </tr>
+                <tr>
+                    <td>体重范围:</td>
+                    <td><input type="number" v-model="coordinate.weight_range_x"></td>
+                    <td><input type="number" v-model="coordinate.weight_range_y"></td>
+                </tr>
+                <tr>
+                    <td>肌肉线:</td>
+                    <td><input type="number" v-model="coordinate.muscleline_x"></td>
+                    <td><input type="number" v-model="coordinate.muscleline_y"></td>
+                </tr>
+                <tr>
+                    <td>肌肉范围:</td>
+                    <td><input type="number" v-model="coordinate.muscle_range_x"></td>
+                    <td><input type="number" v-model="coordinate.muscle_range_y"></td>
+                </tr>
+                <tr>
+                    <td>体脂百分比线:</td>
+                    <td><input type="number" v-model="coordinate.pbfline_x"></td>
+                    <td><input type="number" v-model="coordinate.pbfline_y"></td>
+                </tr>
+                <tr>
+                    <td>体脂范围:</td>
+                    <td><input type="number" v-model="coordinate.pbf_range_x"></td>
+                    <td><input type="number" v-model="coordinate.pbf_range_y"></td>
+                </tr>
+                <tr>
+                    <td>骨质线:</td>
+                    <td><input type="number" v-model="coordinate.boneline_x"></td>
+                    <td><input type="number" v-model="coordinate.boneline_y"></td>
+                </tr>
+                <tr>
+                    <td>骨质范围:</td>
+                    <td><input type="number" v-model="coordinate.bone_range_copy_x"></td>
+                    <td><input type="number" v-model="coordinate.bone_range_copy_y"></td>
+                </tr>
+                <tr>
+                    <td>总水分线:</td>
+                    <td><input type="number" v-model="coordinate.waterline_x"></td>
+                    <td><input type="number" v-model="coordinate.waterline_y"></td>
+                </tr>
+                <tr>
+                    <td>总水分范围:</td>
+                    <td><input type="number" v-model="coordinate.water_range_copy_x"></td>
+                    <td><input type="number" v-model="coordinate.water_range_copy_y"></td>
+                </tr>
+                <tr>
+                    <td>骨骼肌线:</td>
+                    <td><input type="number" v-model="coordinate.smmline_x"></td>
+                    <td><input type="number" v-model="coordinate.smmline_y"></td>
+                </tr>
+                <tr>
+                    <td>骨骼肌范围:</td>
+                    <td><input type="number" v-model="coordinate.smm_range_x"></td>
+                    <td><input type="number" v-model="coordinate.smm_range_y"></td>
+                </tr>
+                <tr>
+                    <td>体质指数线:</td>
+                    <td><input type="number" v-model="coordinate.bmiline_x"></td>
+                    <td><input type="number" v-model="coordinate.bmiline_y"></td>
+                </tr>
+                <tr>
+                    <td>体质指数范围:</td>
+                    <td><input type="number" v-model="coordinate.bmi_range_x"></td>
+                    <td><input type="number" v-model="coordinate.bmi_range_y"></td>
+                </tr>
+                <tr>
+                    <td>腰臀比线:</td>
+                    <td><input type="number" v-model="coordinate.whrline_x"></td>
+                    <td><input type="number" v-model="coordinate.whrline_y"></td>
+                </tr>
+                <tr>
+                    <td>腰臀比范围:</td>
+                    <td><input type="number" v-model="coordinate.whr_range_x"></td>
+                    <td><input type="number" v-model="coordinate.whr_range_y"></td>
+                </tr>
+            </table>
+            <table>
+                <tr id="NZZFFX_B" class="tr-bg"><td colspan="3"><h3>内脏脂肪分析</h3></td></tr>
+                <tr>
+                    <td>躯干脂肪总量:</td>
+                    <td><input type="number" v-model="coordinate.tr_fat_x"></td>
+                    <td><input type="number" v-model="coordinate.tr_fat_y"></td>
+                </tr>
+                <tr>
+                    <td>内脏脂肪指数线:</td>
+                    <td><input type="number" v-model="coordinate.vfiline_x"></td>
+                    <td><input type="number" v-model="coordinate.vfiline_y"></td>
+                </tr>
+            </table>
+            <table>
+                <tr id="SZFX_B" class="tr-bg"><td colspan="3"><h3>水肿分析</h3></td></tr>
+                <tr>
+                    <td>身体水分率:</td>
+                    <td><input type="number" v-model="coordinate.water_scale_copy_x"></td>
+                    <td><input type="number" v-model="coordinate.water_scale_copy_y"></td>
+                </tr>
+                <tr>
+                    <td>细胞内液:</td>
+                    <td><input type="number" v-model="coordinate.icw_copy_x"></td>
+                    <td><input type="number" v-model="coordinate.icw_copy_y"></td>
+                </tr>
+                <tr>
+                    <td>细胞外液:</td>
+                    <td><input type="number" v-model="coordinate.ecw_copy_x"></td>
+                    <td><input type="number" v-model="coordinate.ecw_copy_y"></td>
+                </tr>
+                <tr>
+                    <td>水肿系数:</td>
+                    <td><input type="number" v-model="coordinate.edema_x"></td>
+                    <td><input type="number" v-model="coordinate.edema_y"></td>
+                </tr>
+                <tr>
+                    <td>水肿系数范围:</td>
+                    <td><input type="number" v-model="coordinate.edema_range_x"></td>
+                    <td><input type="number" v-model="coordinate.edema_range_y"></td>
+                </tr>
+                <tr>
+                    <td>水肿指数:</td>
+                    <td><input type="number" v-model="coordinate.edematrue_x"></td>
+                    <td><input type="number" v-model="coordinate.edematrue_y"></td>
+                </tr>
+            </table>
+            <table>
+                <tr id="JDFX_B" class="tr-bg"><td colspan="3"><h3>节段分析</h3></td></tr>
+                <tr>
+                    <td>右上肢水分:</td>
+                    <td><input type="number" v-model="coordinate.ra_water_x"></td>
+                    <td><input type="number" v-model="coordinate.ra_water_y"></td>
+                </tr>
+                <tr>
+                    <td>左上肢水分:</td>
+                    <td><input type="number" v-model="coordinate.la_water_x"></td>
+                    <td><input type="number" v-model="coordinate.la_water_y"></td>
+                </tr>
+                <tr>
+                    <td>右下肢水分:</td>
+                    <td><input type="number" v-model="coordinate.rl_water_x"></td>
+                    <td><input type="number" v-model="coordinate.rl_water_y"></td>
+                </tr>
+                <tr>
+                    <td>左下肢水分:</td>
+                    <td><input type="number" v-model="coordinate.ll_water_x"></td>
+                    <td><input type="number" v-model="coordinate.ll_water_y"></td>
+                </tr>
+                <tr>
+                    <td>躯干水分:</td>
+                    <td><input type="number" v-model="coordinate.tr_water_x"></td>
+                    <td><input type="number" v-model="coordinate.tr_water_y"></td>
+                </tr>
+                <tr>
+                    <td>右上肢脂肪:</td>
+                    <td><input type="number" v-model="coordinate.ra_fat_x"></td>
+                    <td><input type="number" v-model="coordinate.ra_fat_y"></td>
+                </tr>
+                <tr>
+                    <td>左上肢脂肪:</td>
+                    <td><input type="number" v-model="coordinate.la_fat_x"></td>
+                    <td><input type="number" v-model="coordinate.la_fat_y"></td>
+                </tr>
+                <tr>
+                    <td>右下肢脂肪:</td>
+                    <td><input type="number" v-model="coordinate.rl_fat_x"></td>
+                    <td><input type="number" v-model="coordinate.rl_fat_y"></td>
+                </tr>
+                <tr>
+                    <td>左下肢脂肪:</td>
+                    <td><input type="number" v-model="coordinate.ll_fat_x"></td>
+                    <td><input type="number" v-model="coordinate.ll_fat_y"></td>
+                </tr>
+                <tr>
+                    <td>躯干脂肪:</td>
+                    <td><input type="number" v-model="coordinate.tr_fat_copy_x"></td>
+                    <td><input type="number" v-model="coordinate.tr_fat_copy_y"></td>
+                </tr>
+            </table>
+            <table>
+                <tr id="TXPD_B" class="tr-bg"><td colspan="3"><h3>体型判定</h3></td></tr>
+                <tr>
+                    <td>体型:</td>
+                    <td><input type="number" v-model="coordinate.body_type_x"></td>
+                    <td><input type="number" v-model="coordinate.body_type_y"></td>
+                </tr>
+            </table>
+            <table>
+                <tr id="TZGL_B" class="tr-bg"><td colspan="3"><h3>体重管理</h3></td></tr>
+                <tr>
+                    <td>目标体重:</td>
+                    <td><input type="number" v-model="coordinate.standard_weight_x"></td>
+                    <td><input type="number" v-model="coordinate.standard_weight_y"></td>
+                </tr>
+                <tr>
+                    <td>体重控制:</td>
+                    <td><input type="number" v-model="coordinate.weight_control_x"></td>
+                    <td><input type="number" v-model="coordinate.weight_control_y"></td>
+                </tr>
+                <tr>
+                    <td>脂肪控制量:</td>
+                    <td><input type="number" v-model="coordinate.fat_control_x"></td>
+                    <td><input type="number" v-model="coordinate.fat_control_y"></td>
+                </tr>
+                <tr>
+                    <td>肌肉控制量:</td>
+                    <td><input type="number" v-model="coordinate.muscle_control_x"></td>
+                    <td><input type="number" v-model="coordinate.muscle_control_y"></td>
+                </tr>
+            </table>
+            <table>
+                <tr id="FPFX_B" class="tr-bg"><td colspan="3"><h3>肥胖分析</h3></td></tr>
+                <tr>
+                    <td>体重(BMI)等级:</td>
+                    <td><input type="number" v-model="coordinate.bmi_x"></td>
+                    <td><input type="number" v-model="coordinate.bmi_y"></td>
+                </tr>
+                <tr>
+                    <td>体脂百分比指数:</td>
+                    <td><input type="number" v-model="coordinate.pbftrue_x"></td>
+                    <td><input type="number" v-model="coordinate.pbftrue_y"></td>
+                </tr>
+                <tr>
+                    <td>腰臀比指数:</td>
+                    <td><input type="number" v-model="coordinate.whrtrue_x"></td>
+                    <td><input type="number" v-model="coordinate.whrtrue_y"></td>
+                </tr>
+            </table>
+            <table>
+                <tr id="YYFX_B" class="tr-bg"><td colspan="3"><h3>营养分析</h3></td></tr>
+                <tr>
+                    <td>蛋白质指数:</td>
+                    <td><input type="number" v-model="coordinate.proteintrue_x"></td>
+                    <td><input type="number" v-model="coordinate.proteintrue_y"></td>
+                </tr>
+                <tr>
+                    <td>脂肪指数:</td>
+                    <td><input type="number" v-model="coordinate.pbftrue_copy_x"></td>
+                    <td><input type="number" v-model="coordinate.pbftrue_copy_y"></td>
+                </tr>
+                <tr>
+                    <td>无机盐指数:</td>
+                    <td><input type="number" v-model="coordinate.bonetrue_x"></td>
+                    <td><input type="number" v-model="coordinate.bonetrue_y"></td>
+                </tr>
+                <tr>
+                    <td>基础代谢(BMR):</td>
+                    <td><input type="number" v-model="coordinate.bmr_x"></td>
+                    <td><input type="number" v-model="coordinate.bmr_y"></td>
+                </tr>
+            </table>
+        </div>
+        <div class="tab-pane fade" id="BCA-1C-2">
+            <table>
+                <tr>
+                    <th>名称</th>
+                    <th>横坐标</th>
+                    <th>纵坐标</th>
+                </tr>
+                <tr id="JBXX_C" class="tr-bg">
+                    <td colspan="3">
+                        <h3>基本信息</h3>
+                    </td>
+                </tr>
+                <tr>
+                    <td>编号/姓名:</td>
+                    <td><input type="number" v-model="coordinate.name_x"></td>
+                    <td><input type="number" v-model="coordinate.name_y"></td>
+                </tr>
+                <tr>
+                    <td>性别:</td>
+                    <td><input type="number" v-model="coordinate.sex_x"></td>
+                    <td><input type="number" v-model="coordinate.sex_y"></td>
+                </tr>
+                <tr>
+                    <td>年龄:</td>
+                    <td><input type="number" v-model="coordinate.age_x"></td>
+                    <td><input type="number" v-model="coordinate.age_y"></td>
+                </tr>
+                <tr>
+                    <td>身高:</td>
+                    <td><input type="number" v-model="coordinate.height_x"></td>
+                    <td><input type="number" v-model="coordinate.height_y"></td>
+                </tr>
+                <tr>
+                    <td>测试时间:</td>
+                    <td><input type="number" v-model="coordinate.testdate_x"></td>
+                    <td><input type="number" v-model="coordinate.testdate_y"></td>
+                </tr>
+                <tr>
+                    <td>健康评分:</td>
+                    <td><input type="number" v-model="coordinate.score_x"></td>
+                    <td><input type="number" v-model="coordinate.score_y"></td>
+                </tr>
+                <tr>
+                    <td>身体年龄:</td>
+                    <td><input type="number" v-model="coordinate.body_age_x"></td>
+                    <td><input type="number" v-model="coordinate.body_age_y"></td>
+                </tr>
+            </table>
+            <table>
+                <tr id="RTCF_C" class="tr-bg"><td colspan="3"><h3>体成分数据</h3></td></tr>
+                <tr>
+                    <td>水分线:</td>
+                    <td><input type="number" v-model="coordinate.waterline_x"></td>
+                    <td><input type="number" v-model="coordinate.waterline_y"></td>
+                </tr>
+                <tr>
+                    <td>水分范围:</td>
+                    <td><input type="number" v-model="coordinate.water_range_x"></td>
+                    <td><input type="number" v-model="coordinate.water_range_y"></td>
+                </tr>
+                <tr>
+                    <td>脂肪线:</td>
+                    <td><input type="number" v-model="coordinate.fatline_x"></td>
+                    <td><input type="number" v-model="coordinate.fatline_y"></td>
+                </tr>
+                <tr>
+                    <td>脂肪范围:</td>
+                    <td><input type="number" v-model="coordinate.fat_range_x"></td>
+                    <td><input type="number" v-model="coordinate.fat_range_y"></td>
+                </tr>
+                <tr>
+                    <td>蛋白质线:</td>
+                    <td><input type="number" v-model="coordinate.proteinline_x"></td>
+                    <td><input type="number" v-model="coordinate.proteinline_y"></td>
+                </tr>
+                <tr>
+                    <td>蛋白质范围:</td>
+                    <td><input type="number" v-model="coordinate.protein_range_x"></td>
+                    <td><input type="number" v-model="coordinate.protein_range_y"></td>
+                </tr>
+                <tr>
+                    <td>无机盐线:</td>
+                    <td><input type="number" v-model="coordinate.boneline_x"></td>
+                    <td><input type="number" v-model="coordinate.boneline_y"></td>
+                </tr>
+                <tr>
+                    <td>无机盐范围:</td>
+                    <td><input type="number" v-model="coordinate.bone_range_x"></td>
+                    <td><input type="number" v-model="coordinate.bone_range_y"></td>
+                </tr>
+            </table>
+            <table>
+                <tr id="SSSJ_C" class="tr-bg"><td colspan="3"><h3>瘦身数据</h3></td></tr>
+                <tr>
+                    <td>体重线:</td>
+                    <td><input type="number" v-model="coordinate.weightline_x"></td>
+                    <td><input type="number" v-model="coordinate.weightline_y"></td>
+                </tr>
+                <tr>
+                    <td>体重范围:</td>
+                    <td><input type="number" v-model="coordinate.weight_range_x"></td>
+                    <td><input type="number" v-model="coordinate.weight_range_y"></td>
+                </tr>
+                <tr>
+                    <td>脂肪线:</td>
+                    <td><input type="number" v-model="coordinate.fatline_copy_x"></td>
+                    <td><input type="number" v-model="coordinate.fatline_copy_y"></td>
+                </tr>
+                <tr>
+                    <td>脂肪范围:</td>
+                    <td><input type="number" v-model="coordinate.fat_range_copy_x"></td>
+                    <td><input type="number" v-model="coordinate.fat_range_copy_y"></td>
+                </tr>
+                <tr>
+                    <td>体脂百分比线:</td>
+                    <td><input type="number" v-model="coordinate.pbfline_x"></td>
+                    <td><input type="number" v-model="coordinate.pbfline_y"></td>
+                </tr>
+                <tr>
+                    <td>体脂百分比范围:</td>
+                    <td><input type="number" v-model="coordinate.pbf_range_x"></td>
+                    <td><input type="number" v-model="coordinate.pbf_range_y"></td>
+                </tr>
+                <tr>
+                    <td>内脏脂肪线:</td>
+                    <td><input type="number" v-model="coordinate.vfiline_x"></td>
+                    <td><input type="number" v-model="coordinate.vfiline_y"></td>
+                </tr>
+                <tr>
+                    <td>内脏脂肪范围:</td>
+                    <td><input type="number" v-model="coordinate.vfi_range_x"></td>
+                    <td><input type="number" v-model="coordinate.vfi_range_y"></td>
+                </tr>
+                <tr>
+                    <td>水分比例线:</td>
+                    <td><input type="number" v-model="coordinate.waterline_copy_x"></td>
+                    <td><input type="number" v-model="coordinate.waterline_copy_y"></td>
+                </tr>
+                <tr>
+                    <td>水分比例范围:</td>
+                    <td><input type="number" v-model="coordinate.water_persent_range_x"></td>
+                    <td><input type="number" v-model="coordinate.water_persent_range_y"></td>
+                </tr>
+                <tr>
+                    <td>体质指数线:</td>
+                    <td><input type="number" v-model="coordinate.bmiline_x"></td>
+                    <td><input type="number" v-model="coordinate.bmiline_y"></td>
+                </tr>
+                <tr>
+                    <td>体质指数范围:</td>
+                    <td><input type="number" v-model="coordinate.bmi_range_x"></td>
+                    <td><input type="number" v-model="coordinate.bmi_range_y"></td>
+                </tr>
+                <tr>
+                    <td>腰臀比线:</td>
+                    <td><input type="number" v-model="coordinate.whrline_x"></td>
+                    <td><input type="number" v-model="coordinate.whrline_y"></td>
+                </tr>
+                <tr>
+                    <td>腰臀比范围</td>
+                    <td><input type="number" v-model="coordinate.whr_range_x"></td>
+                    <td><input type="number" v-model="coordinate.whr_range_y"></td>
+                </tr>
+            </table>
+            <table>
+                <tr id="YYSJ_C" class="tr-bg"><td colspan="3"><h3>营养数据</h3></td></tr>
+                <tr>
+                    <td>每日热量需求:</td>
+                    <td><input type="number" v-model="coordinate.daily_energy_x"></td>
+                    <td><input type="number" v-model="coordinate.daily_energy_y"></td>
+                </tr>
+                <tr>
+                    <td>基础代谢:</td>
+                    <td><input type="number" v-model="coordinate.bmr_x"></td>
+                    <td><input type="number" v-model="coordinate.bmr_y"></td>
+                </tr>
+                <tr>
+                    <td>单位体重基础代谢:</td>
+                    <td><input type="number" v-model="coordinate.unit_bmr_x"></td>
+                    <td><input type="number" v-model="coordinate.unit_bmr_y"></td>
+                </tr>
+                <tr>
+                    <td>蛋白质指数:</td>
+                    <td><input type="number" v-model="coordinate.proteintrue_x"></td>
+                    <td><input type="number" v-model="coordinate.proteintrue_y"></td>
+                </tr>
+                <tr>
+                    <td>脂肪指数:</td>
+                    <td><input type="number" v-model="coordinate.pbftrue_x"></td>
+                    <td><input type="number" v-model="coordinate.pbftrue_y"></td>
+                </tr>
+                <tr>
+                    <td>无机盐指数:</td>
+                    <td><input type="number" v-model="coordinate.bonetrue_x"></td>
+                    <td><input type="number" v-model="coordinate.bonetrue_y"></td>
+                </tr>
+            </table>
+            <table>
+                <tr id="TXPD_C" class="tr-bg"><td colspan="3"><h3>体型判定</h3></td></tr>
+                <tr>
+                    <td>体型:</td>
+                    <td><input type="number" v-model="coordinate.body_type_x"></td>
+                    <td><input type="number" v-model="coordinate.body_type_y"></td>
+                </tr>
+            </table>
+            <table>
+                <tr id="TZGL_C" class="tr-bg"><td colspan="3"><h3>体重管理</h3></td></tr>
+                <tr>
+                    <td>目标体重:</td>
+                    <td><input type="number" v-model="coordinate.standard_weight_x"></td>
+                    <td><input type="number" v-model="coordinate.standard_weight_y"></td>
+                </tr>
+                <tr>
+                    <td>体重控制:</td>
+                    <td><input type="number" v-model="coordinate.weight_control_x"></td>
+                    <td><input type="number" v-model="coordinate.weight_control_y"></td>
+                </tr>
+                <tr>
+                    <td>脂肪控制量:</td>
+                    <td><input type="number" v-model="coordinate.fat_control_x"></td>
+                    <td><input type="number" v-model="coordinate.fat_control_y"></td>
+                </tr>
+                <tr>
+                    <td>肌肉控制量:</td>
+                    <td><input type="number" v-model="coordinate.muscle_control_x"></td>
+                    <td><input type="number" v-model="coordinate.muscle_control_y"></td>
+                </tr>
+            </table>
+        </div>
+        <div class="tab-pane fade" id="BCA-1D">
+            <table>
+                <tr>
+                    <th>名称</th>
+                    <th>横坐标</th>
+                    <th>纵坐标</th>
+                </tr>
+                <tr id="JBXX_D" class="tr-bg">
+                    <td colspan="3">
+                        <h3>基本信息</h3>
+                    </td>
+                </tr>
+                <tr>
+                    <td>编号/姓名:</td>
+                    <td><input type="number" v-model="coordinate.name_x"></td>
+                    <td><input type="number" v-model="coordinate.name_y"></td>
+                </tr>
+                <tr>
+                    <td>性别:</td>
+                    <td><input type="number" v-model="coordinate.sex_x"></td>
+                    <td><input type="number" v-model="coordinate.sex_y"></td>
+                </tr>
+                <tr>
+                    <td>年龄:</td>
+                    <td><input type="number" v-model="coordinate.age_x"></td>
+                    <td><input type="number" v-model="coordinate.age_y"></td>
+                </tr>
+                <tr>
+                    <td>身高:</td>
+                    <td><input type="number" v-model="coordinate.height_x"></td>
+                    <td><input type="number" v-model="coordinate.height_y"></td>
+                </tr>
+                <tr>
+                    <td>测试时间:</td>
+                    <td><input type="number" v-model="coordinate.testdate_x"></td>
+                    <td><input type="number" v-model="coordinate.testdate_y"></td>
+                </tr>
+                <tr>
+                    <td>健康评分:</td>
+                    <td><input type="number" v-model="coordinate.score_x"></td>
+                    <td><input type="number" v-model="coordinate.score_y"></td>
+                </tr>
+                <tr>
+                    <td>身体年龄:</td>
+                    <td><input type="number" v-model="coordinate.body_age_x"></td>
+                    <td><input type="number" v-model="coordinate.body_age_y"></td>
+                </tr>
+            </table>
+            <table>
+                <tr id="RTCF_D" class="tr-bg"><td colspan="3"><h3>人体成分</h3></td></tr>
+                <tr>
+                    <td>脂肪比例:</td>
+                    <td><input type="number" v-model="coordinate.pbf_x"></td>
+                    <td><input type="number" v-model="coordinate.pbf_y"></td>
+                </tr>
+                <tr>
+                    <td>脂肪量:</td>
+                    <td><input type="number" v-model="coordinate.fat_x"></td>
+                    <td><input type="number" v-model="coordinate.fat_y"></td>
+                </tr>
+                <tr>
+                    <td>脂肪正常范围:</td>
+                    <td><input type="number" v-model="coordinate.fat_range_x"></td>
+                    <td><input type="number" v-model="coordinate.fat_range_y"></td>
+                </tr>
+                <tr>
+                    <td>骨质比例:</td>
+                    <td><input type="number" v-model="coordinate.bone_scale_x"></td>
+                    <td><input type="number" v-model="coordinate.bone_scale_y"></td>
+                </tr>
+                <tr>
+                    <td>骨质量:</td>
+                    <td><input type="number" v-model="coordinate.bone_x"></td>
+                    <td><input type="number" v-model="coordinate.bone_y"></td>
+                </tr>
+                <tr>
+                    <td>骨质正常范围:</td>
+                    <td><input type="number" v-model="coordinate.bone_range_x"></td>
+                    <td><input type="number" v-model="coordinate.bone_range_y"></td>
+                </tr>
+                <tr>
+                    <td>蛋白质比例:</td>
+                    <td><input type="number" v-model="coordinate.protein_scale_x"></td>
+                    <td><input type="number" v-model="coordinate.protein_scale_y"></td>
+                </tr>
+                <tr>
+                    <td>蛋白质量:</td>
+                    <td><input type="number" v-model="coordinate.protein_x"></td>
+                    <td><input type="number" v-model="coordinate.protein_y"></td>
+                </tr>
+                <tr>
+                    <td>蛋白质正常范围:</td>
+                    <td><input type="number" v-model="coordinate.protein_range_x"></td>
+                    <td><input type="number" v-model="coordinate.protein_range_y"></td>
+                </tr>
+                <tr>
+                    <td>水分比例:</td>
+                    <td><input type="number" v-model="coordinate.water_scale_x"></td>
+                    <td><input type="number" v-model="coordinate.water_scale_y"></td>
+                </tr>
+                <tr>
+                    <td>水分量:</td>
+                    <td><input type="number" v-model="coordinate.water_x"></td>
+                    <td><input type="number" v-model="coordinate.water_y"></td>
+                </tr>
+                <tr>
+                    <td>水分正常范围:</td>
+                    <td><input type="number" v-model="coordinate.water_range_x"></td>
+                    <td><input type="number" v-model="coordinate.water_range_y"></td>
+                </tr>
+                <tr>
+                    <td>细胞内液:</td>
+                    <td><input type="number" v-model="coordinate.icw_x"></td>
+                    <td><input type="number" v-model="coordinate.icw_y"></td>
+                </tr>
+                <tr>
+                    <td>细胞外液:</td>
+                    <td><input type="number" v-model="coordinate.ecw_x"></td>
+                    <td><input type="number" v-model="coordinate.ecw_y"></td>
+                </tr>
+                <tr>
+                    <td>总水分:</td>
+                    <td><input type="number" v-model="coordinate.water_copy_x"></td>
+                    <td><input type="number" v-model="coordinate.water_copy_y"></td>
+                </tr>
+                <tr>
+                    <td>肌肉:</td>
+                    <td><input type="number" v-model="coordinate.muscle_x"></td>
+                    <td><input type="number" v-model="coordinate.muscle_y"></td>
+                </tr>
+                <tr>
+                    <td>去脂体重:</td>
+                    <td><input type="number" v-model="coordinate.lbm_x"></td>
+                    <td><input type="number" v-model="coordinate.lbm_y"></td>
+                </tr>
+                <tr>
+                    <td>体重:</td>
+                    <td><input type="number" v-model="coordinate.weight_x"></td>
+                    <td><input type="number" v-model="coordinate.weight_y"></td>
+                </tr>
+            </table>
+            <table>
+                <tr id="JRFX_D" class="tr-bg"><td colspan="3"><h3>肌肉分析</h3></td></tr>
+                <tr>
+                    <td>肌肉线:</td>
+                    <td><input type="number" v-model="coordinate.muscleline_x"></td>
+                    <td><input type="number" v-model="coordinate.muscleline_y"></td>
+                </tr>
+                <tr>
+                    <td>肌肉范围:</td>
+                    <td><input type="number" v-model="coordinate.muscle_range_x"></td>
+                    <td><input type="number" v-model="coordinate.muscle_range_y"></td>
+                </tr>
+                <tr>
+                    <td>骨骼肌线:</td>
+                    <td><input type="number" v-model="coordinate.smmline_x"></td>
+                    <td><input type="number" v-model="coordinate.smmline_y"></td>
+                </tr>
+                <tr>
+                    <td>骨骼肌范围:</td>
+                    <td><input type="number" v-model="coordinate.smm_range_x"></td>
+                    <td><input type="number" v-model="coordinate.smm_range_y"></td>
+                </tr>
+                <tr>
+                    <td>蛋白质线:</td>
+                    <td><input type="number" v-model="coordinate.proteinline_x"></td>
+                    <td><input type="number" v-model="coordinate.proteinline_y"></td>
+                </tr>
+                <tr>
+                    <td>蛋白质范围:</td>
+                    <td><input type="number" v-model="coordinate.protein_range_copy_x"></td>
+                    <td><input type="number" v-model="coordinate.protein_range_copy_y"></td>
+                </tr>
+            </table>
+            <table>
+                <tr id="ZFFX_D" class="tr-bg"><td colspan="3"><h3>脂肪分析</h3></td></tr>
+                <tr>
+                    <td>脂肪线:</td>
+                    <td><input type="number" v-model="coordinate.fatline_x"></td>
+                    <td><input type="number" v-model="coordinate.fatline_y"></td>
+                </tr>
+                <tr>
+                    <td>脂肪范围:</td>
+                    <td><input type="number" v-model="coordinate.fat_range_copy_x"></td>
+                    <td><input type="number" v-model="coordinate.fat_range_copy_y"></td>
+                </tr>
+                <tr>
+                    <td>体脂百分比线:</td>
+                    <td><input type="number" v-model="coordinate.pbfline_x"></td>
+                    <td><input type="number" v-model="coordinate.pbfline_y"></td>
+                </tr>
+                <tr>
+                    <td>体脂百分比范围:</td>
+                    <td><input type="number" v-model="coordinate.pbf_range_x"></td>
+                    <td><input type="number" v-model="coordinate.pbf_range_y"></td>
+                </tr>
+                <tr>
+                    <td>内脏脂肪指数线:</td>
+                    <td><input type="number" v-model="coordinate.vfiline_x"></td>
+                    <td><input type="number" v-model="coordinate.vfiline_y"></td>
+                </tr>
+                <tr>
+                    <td>内脏脂肪范围:</td>
+                    <td><input type="number" v-model="coordinate.vfi_range_x"></td>
+                    <td><input type="number" v-model="coordinate.vfi_range_y"></td>
+                </tr>
+                <tr>
+                    <td>躯干脂肪线:</td>
+                    <td><input type="number" v-model="coordinate.tr_fatline_x"></td>
+                    <td><input type="number" v-model="coordinate.tr_fatline_y"></td>
+                </tr>
+                <tr>
+                    <td>躯干脂肪范围:</td>
+                    <td><input type="number" v-model="coordinate.tr_fat_range_x"></td>
+                    <td><input type="number" v-model="coordinate.tr_fat_range_y"></td>
+                </tr>
+            </table>
+            <table>
+                <tr id="XTFX_D" class="tr-bg"><td colspan="3"><h3>肌肉分析</h3></td></tr>
+                <tr>
+                    <td>体质指数线:</td>
+                    <td><input type="number" v-model="coordinate.bmiline_x"></td>
+                    <td><input type="number" v-model="coordinate.bmiline_y"></td>
+                </tr>
+                <tr>
+                    <td>体质指数范围:</td>
+                    <td><input type="number" v-model="coordinate.bmi_range_x"></td>
+                    <td><input type="number" v-model="coordinate.bmi_range_y"></td>
+                </tr>
+                <tr>
+                    <td>腰臀比线:</td>
+                    <td><input type="number" v-model="coordinate.whrline_x"></td>
+                    <td><input type="number" v-model="coordinate.whrline_y"></td>
+                </tr>
+                <tr>
+                    <td>腰臀比范围:</td>
+                    <td><input type="number" v-model="coordinate.whr_range_x"></td>
+                    <td><input type="number" v-model="coordinate.whr_range_y"></td>
+                </tr>
+            </table>
+            <table>
+                <tr id="JDFX_D" class="tr-bg"><td colspan="3"><h3>节段分析</h3></td></tr>
+                <tr>
+                    <td>右上肢肌肉:</td>
+                    <td><input type="number" v-model="coordinate.ra_muscle_x"></td>
+                    <td><input type="number" v-model="coordinate.ra_muscle_y"></td>
+                </tr>
+                <tr>
+                    <td>左上肢肌肉:</td>
+                    <td><input type="number" v-model="coordinate.la_muscle_x"></td>
+                    <td><input type="number" v-model="coordinate.la_muscle_y"></td>
+                </tr>
+                <tr>
+                    <td>右下肢肌肉:</td>
+                    <td><input type="number" v-model="coordinate.rl_muscle_x"></td>
+                    <td><input type="number" v-model="coordinate.rl_muscle_y"></td>
+                </tr>
+                <tr>
+                    <td>左下肢肌肉:</td>
+                    <td><input type="number" v-model="coordinate.ll_muscle_x"></td>
+                    <td><input type="number" v-model="coordinate.ll_muscle_y"></td>
+                </tr>
+                <tr>
+                    <td>躯干肌肉:</td>
+                    <td><input type="number" v-model="coordinate.tr_muscle_x"></td>
+                    <td><input type="number" v-model="coordinate.tr_muscle_y"></td>
+                </tr>
+                <tr>
+                    <td>右上肢脂肪:</td>
+                    <td><input type="number" v-model="coordinate.ra_fat_x"></td>
+                    <td><input type="number" v-model="coordinate.ra_fat_y"></td>
+                </tr>
+                <tr>
+                    <td>左上肢脂肪:</td>
+                    <td><input type="number" v-model="coordinate.la_fat_x"></td>
+                    <td><input type="number" v-model="coordinate.la_fat_y"></td>
+                </tr>
+                <tr>
+                    <td>右下肢脂肪:</td>
+                    <td><input type="number" v-model="coordinate.rl_fat_x"></td>
+                    <td><input type="number" v-model="coordinate.rl_fat_y"></td>
+                </tr>
+                <tr>
+                    <td>左下肢脂肪:</td>
+                    <td><input type="number" v-model="coordinate.ll_fat_x"></td>
+                    <td><input type="number" v-model="coordinate.ll_fat_y"></td>
+                </tr>
+                <tr>
+                    <td>躯干脂肪:</td>
+                    <td><input type="number" v-model="coordinate.tr_fat_x"></td>
+                    <td><input type="number" v-model="coordinate.tr_fat_y"></td>
+                </tr>
+            </table>
+            <table>
+                <tr id="TZGL_D" class="tr-bg"><td colspan="3"><h3>体重管理</h3></td></tr>
+                <tr>
+                    <td>目标体重:</td>
+                    <td><input type="number" v-model="coordinate.standard_weight_x"></td>
+                    <td><input type="number" v-model="coordinate.standard_weight_y"></td>
+                </tr>
+                <tr>
+                    <td>体重控制:</td>
+                    <td><input type="number" v-model="coordinate.weight_control_x"></td>
+                    <td><input type="number" v-model="coordinate.weight_control_y"></td>
+                </tr>
+                <tr>
+                    <td>脂肪控制量:</td>
+                    <td><input type="number" v-model="coordinate.fat_control_x"></td>
+                    <td><input type="number" v-model="coordinate.fat_control_y"></td>
+                </tr>
+                <tr>
+                    <td>肌肉控制量:</td>
+                    <td><input type="number" v-model="coordinate.muscle_control_x"></td>
+                    <td><input type="number" v-model="coordinate.muscle_control_y"></td>
+                </tr>
+            </table>
+            <table>
+                <tr id="GGJFX_D" class="tr-bg"><td colspan="3"><h3>骨骼肌分析</h3></td></tr>
+                <tr>
+                    <td>骨骼肌:</td>
+                    <td><input type="number" v-model="coordinate.smm_x"></td>
+                    <td><input type="number" v-model="coordinate.smm_y"></td>
+                </tr>
+                <tr>
+                    <td>骨骼肌指数:</td>
+                    <td><input type="number" v-model="coordinate.smmtrue_x"></td>
+                    <td><input type="number" v-model="coordinate.smmtrue_y"></td>
+                </tr>
+                <tr>
+                    <td>上肢指数:</td>
+                    <td><input type="number" v-model="coordinate.up_muscle_x"></td>
+                    <td><input type="number" v-model="coordinate.up_muscle_y"></td>
+                </tr>
+                <tr>
+                    <td>下肢指数:</td>
+                    <td><input type="number" v-model="coordinate.down_muscle_x"></td>
+                    <td><input type="number" v-model="coordinate.down_muscle_y"></td>
+                </tr>
+                <tr>
+                    <td>平衡指数:</td>
+                    <td><input type="number" v-model="coordinate.balance_x"></td>
+                    <td><input type="number" v-model="coordinate.balance_y"></td>
+                </tr>
+            </table>
+            <table>
+                <tr id="FPFX_D" class="tr-bg"><td colspan="3"><h3>肥胖分析</h3></td></tr>
+                <tr>
+                    <td>体重(BMI)等级:</td>
+                    <td><input type="number" v-model="coordinate.bmi_x"></td>
+                    <td><input type="number" v-model="coordinate.bmi_y"></td>
+                </tr>
+                <tr>
+                    <td>基础代谢:</td>
+                    <td><input type="number" v-model="coordinate.bmr_x"></td>
+                    <td><input type="number" v-model="coordinate.bmr_y"></td>
+                </tr>
+                <tr>
+                    <td>腰臀比指数:</td>
+                    <td><input type="number" v-model="coordinate.whrtrue_x"></td>
+                    <td><input type="number" v-model="coordinate.whrtrue_y"></td>
+                </tr>
+            </table>
+            <table>
+                <tr id="TXPD_D" class="tr-bg"><td colspan="3"><h3>体型判定</h3></td></tr>
+                <tr>
+                    <td>体型:</td>
+                    <td><input type="number" v-model="coordinate.body_type_x"></td>
+                    <td><input type="number" v-model="coordinate.body_type_y"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="center-block" style="width: 200px;margin-top: 20px;margin-bottom: 20px;">
+        <button class="center-block pull-left" style="width: 80px" @click="updateCoordinate">提交</button>
+        <button class="center-block pull-right" style="width: 80px" @click="goBack">返回</button>
+    </div>
+</div>
+
+<script src="/js/coordinate.js"></script>
+</body>
+</html>

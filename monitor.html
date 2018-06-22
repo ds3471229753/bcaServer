@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>在线设备一览</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <!--vue.js-->
+    <script src="/js/vue.min.js"></script>
+    <script src="/js/vue-resource.js"></script>
+</head>
+
+
+<body>
+<div class="container-fluid">
+    <h2 class="form-signin-heading">在线设备一览</h2>
+
+    <div id="dataSection" class="bs-example" data-example-id="simple-table">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>设备编号</th>
+                <th>本地IP</th>
+                <th>使用单位</th>
+                <th>登录时间</th>
+                <th>状态</th>
+            </tr>
+            </thead>
+            <tbody id="upload-data">
+            <tr>
+                <td>{{ deviceid }}</td>
+                <td>{{ localip }}</td>
+                <td>{{ holder }}</td>
+                <td>{{ regtime }}</td>
+                <td>{{ device_state }}</td>
+            </tr>
+            </tbody>
+        </table>
+        <br>
+        <button class="center-block btn btn-primary" style="width: 80px" @click="goBack">返回</button>
+    </div>
+</div>
+</body>
+
+<script>
+    //采用location.href获取地址栏参数
+    var url = location.href; //取得整个地址栏
+    var urlList = url.split('/');
+    var url = "/api/deviceState/" + urlList[4];  //统一查询地址
+
+    var records = new Vue({
+        el: '#dataSection',
+        data: {
+            deviceid: "",
+            localip: "",
+            holder: "",
+            regtime: "",
+            device_state: ""
+        },
+        created: function () {
+            this.$http.get(url).then(function (response) {
+                // success callback
+                this.deviceid = response.body.deviceid;
+                this.localip = response.body.localip;
+                this.holder = response.body.holder;
+                this.regtime = response.body.regtime;
+                this.device_state = response.body.device_state;
+
+            }, function (response) {
+                // error callback
+                alert("获取数据失败！");
+            });
+        },
+        methods: {
+            goBack() {
+                window.location.href = '/unitInfo';
+            }
+        }
+    })
+
+
+</script>
+</html>
+
